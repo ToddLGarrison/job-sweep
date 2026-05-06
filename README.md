@@ -1,6 +1,8 @@
 # Job Sweep
 
-Pulls companies from the Notion CRM, checks their ATS job boards for matching open roles, and writes qualifying results to the Notion Opportunities database.
+## About
+
+Manually checking dozens of company job boards every day is tedious and error-prone — roles appear and disappear faster than any spreadsheet stays current. This script automates that process by pulling a company list from a Notion CRM, querying each company's ATS (Greenhouse, Lever, or Ashby) via their public JSON APIs, and writing any matching roles directly to a Notion Opportunities database with deduplication, role classification, and a structured run summary. Built in Python using the Notion SDK, `requests`, and `python-dotenv`, with a `--dry-run` flag for safe iteration.
 
 ## Setup
 
