@@ -3,8 +3,9 @@ import datetime
 import importlib
 
 import notion_api as notion
-from config import ATS_SCRAPER_MAP
+from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
 from deduplicator import is_duplicate
+from discovery import run_discovery
 from matcher import get_role_type, match_title
 from models import Opportunity
 
@@ -25,6 +26,7 @@ def main() -> None:
     new_roles: list[str] = []
     ashby_roles: list[tuple[str, str, str]] = []
     error_list: list[tuple[str, str]] = []
+    seen_urls: set[str] = set()
 
     companies = notion.fetch_companies()
 
@@ -48,47 +50,61 @@ def main() -> None:
 
         found_match = False
 
-        for listing in listings:
-            matched = match_title(listing.title)
-            if not matched:
-                continue
+        try:
+            for listing in listings:
+                if listing.url in seen_urls:
+                    continue
 
-            if is_duplicate(company, listing):
-                print(f"SKIP {company.name} / {listing.title} — duplicate found")
-                dupes += 1
-                continue
+                matched = match_title(listing.title)
+                if not matched:
+                    continue
 
-            role_type = get_role_type(matched)
-            verified = "__NO__" if company.ats == "Ashby" else "__YES__"
-            notes = None
-            if company.ats == "Ashby":
-                notes = f"Auto-added by job sweep on {today.isoformat()}. Ashby: manual verification required."
+                if is_duplicate(company, listing):
+                    print(f"SKIP {company.name} / {listing.title} — duplicate found")
+                    dupes += 1
+                    continue
 
-            opp = Opportunity(
-                company=company,
-                listing=listing,
-                matched_title=matched,
-                role_type=role_type,
-                verified=verified,
-                ats=company.ats,
-                notes=notes,
-            )
+                role_type = get_role_type(matched)
+                verified = "__NO__" if company.ats == "Ashby" else "__YES__"
+                notes = None
+                if company.ats == "Ashby":
+                    notes = f"Auto-added by job sweep on {today.isoformat()}. Ashby: manual verification required."
 
-            notion.write_opportunity(opp, dry_run=args.dry_run)
-            found_match = True
-            added += 1
+                opp = Opportunity(
+                    company=company,
+                    listing=listing,
+                    matched_title=matched,
+                    role_type=role_type,
+                    verified=verified,
+                    ats=company.ats,
+                    notes=notes,
+                )
 
-            label = f"{company.name} / {listing.title} / {year} [{company.ats}]"
-            if company.ats == "Ashby":
-                label += " [UNVERIFIED]"
-                ashby_roles.append((company.name, listing.title, listing.url))
-            new_roles.append(label)
+                notion.write_opportunity(opp, dry_run=args.dry_run)
+                seen_urls.add(listing.url)
+                found_match = True
+                added += 1
+
+                label = f"{company.name} / {listing.title} / {year} [{company.ats}]"
+                if company.ats == "Ashby":
+                    label += " [UNVERIFIED]"
+                    ashby_roles.append((company.name, listing.title, listing.url))
+                new_roles.append(label)
+        except Exception as e:
+            error_list.append((company.name, str(e)))
+            error_count += 1
+            notion.update_company(company.page_id, None, dry_run=args.dry_run)
+            continue
 
         hiring = "Relevant" if found_match else "Not"
         if not found_match:
             no_match += 1
         notion.update_company(company.page_id, hiring, dry_run=args.dry_run)
 
+    # --- Discovery ---
+    disc = run_discovery(dry_run=args.dry_run) if DISCOVERY_ENABLED else None
+
+    # --- Run summary ---
     print(f"\n=== Job Sweep Complete — {today.isoformat()} ===")
     print(f"Companies swept: {swept}")
     print(f"New opportunities added: {added}")
@@ -112,6 +128,24 @@ def main() -> None:
         print("\nERRORS:")
         for cname, msg in error_list:
             print(f"  - {cname}: {msg}")
+
+    if disc is not None:
+        print("\n--- Discovery ---")
+        print(f"Roles found via title keyword match: {disc.title_matches}")
+        print(f"Roles found via secondary JD keyword pass: {disc.jd_matches}")
+        print(f"New companies auto-created: {disc.new_companies}")
+        print(f"Roles added to existing companies: {disc.added_to_existing}")
+        print(f"Roles skipped as duplicates: {disc.dupes}")
+
+        if disc.new_roles:
+            print("\nDISCOVERY — NEW ROLES:")
+            for r in disc.new_roles:
+                print(f"  - {r}")
+
+        if disc.errors:
+            print("\nDISCOVERY — ERRORS:")
+            for source, msg in disc.errors:
+                print(f"  - {source}: {msg}")
 
 
 if __name__ == "__main__":

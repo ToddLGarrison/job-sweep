@@ -6,7 +6,7 @@ from notion_client import Client
 from config import COMPANIES_DB_ID, NOTION_API_KEY, OPPORTUNITIES_DB_ID
 from models import Company, Opportunity
 
-_client = Client(auth=NOTION_API_KEY)
+_client = Client(auth=NOTION_API_KEY, timeout_ms=120_000)
 
 
 def fetch_companies() -> list[Company]:
@@ -39,6 +39,47 @@ def fetch_companies() -> list[Company]:
     return companies
 
 
+def find_company_by_name(name: str) -> Optional[Company]:
+    resp = _client.data_sources.query(
+        COMPANIES_DB_ID,
+        filter={"property": "Name", "title": {"contains": name}},
+    )
+    for page in resp.get("results", []):
+        props = page["properties"]
+        found_name = _get_title(props.get("Name", {}))
+        if found_name.lower() == name.lower():
+            return Company(
+                page_id=page["id"],
+                name=found_name,
+                ats=_get_select(props.get("ATS", {})),
+                ats_slug=_get_text(props.get("ATS Slug", {})),
+                tier=_get_select(props.get("Tier", {})),
+            )
+    return None
+
+
+def create_company(
+    name: str, ats: str, slug: str, dry_run: bool = False
+) -> Company:
+    today = datetime.date.today().isoformat()
+    properties: dict = {
+        "Name": {"title": [{"text": {"content": name}}]},
+        "Tier": {"select": {"name": "🥈 Tier 2 – Target"}},
+        "Hiring": {"select": {"name": "Relevant"}},
+        "ATS": {"select": {"name": ats}},
+        "ATS Slug": {"rich_text": [{"text": {"content": slug}}]},
+        "Last Swept": {"date": {"start": today}},
+    }
+    if dry_run:
+        print(f"  [DRY RUN] Would create company: {name} [{ats}/{slug}]")
+        return Company(page_id="dry-run", name=name, ats=ats, ats_slug=slug)
+    resp = _client.pages.create(
+        parent={"data_source_id": COMPANIES_DB_ID},
+        properties=properties,
+    )
+    return Company(page_id=resp["id"], name=name, ats=ats, ats_slug=slug)
+
+
 def query_by_url(url: str) -> bool:
     resp = _client.data_sources.query(
         OPPORTUNITIES_DB_ID,
@@ -66,7 +107,7 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
     properties: dict = {
         "Name": {"title": [{"text": {"content": name}}]},
         "Stage": {"select": {"name": "Qualification"}},
-        "Source": {"select": {"name": "Job Sweep"}},
+        "Source": {"select": {"name": opp.source}},
         "Job URL": {"url": opp.listing.url},
         "Verified": {"checkbox": opp.verified == "__YES__"},
         "Company": {"relation": [{"id": opp.company.page_id}]},
@@ -74,6 +115,8 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
     }
     if opp.notes:
         properties["Notes"] = {"rich_text": [{"text": {"content": opp.notes}}]}
+    if opp.description:
+        properties["Description"] = {"rich_text": [{"text": {"content": opp.description}}]}
     if dry_run:
         print(f"  [DRY RUN] Would create: {name}")
         return
