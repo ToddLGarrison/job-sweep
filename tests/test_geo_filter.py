@@ -1,5 +1,6 @@
 import pytest
 from geo_filter import (
+    is_title_geo_excluded,
     is_us_or_remote,
     location_from_greenhouse,
     location_from_lever,
@@ -193,3 +194,84 @@ class TestLocationFromAshby:
     def test_empty(self):
         job = {}
         assert location_from_ashby(job) == ""
+
+
+# --- is_title_geo_excluded ---
+
+class TestIsTitleGeoExcluded:
+    # Should be excluded
+    def test_emea_excluded(self):
+        assert is_title_geo_excluded("Customer Success Engineer, EMEA") is True
+
+    def test_anz_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - ANZ") is True
+
+    def test_japan_excluded(self):
+        assert is_title_geo_excluded("Technical Account Manager, Japan") is True
+
+    def test_italy_excluded(self):
+        assert is_title_geo_excluded("Solutions Consultant, Italy") is True
+
+    def test_france_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - France") is True
+
+    def test_apac_excluded(self):
+        assert is_title_geo_excluded("Customer Success Manager - APAC") is True
+
+    def test_latam_excluded(self):
+        assert is_title_geo_excluded("Enterprise Solutions Engineer, LATAM") is True
+
+    def test_dach_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - DACH") is True
+
+    def test_uki_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer, UKI") is True
+
+    def test_uk_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - UK") is True
+
+    def test_nordics_excluded(self):
+        assert is_title_geo_excluded("Customer Success Manager, Nordics") is True
+
+    def test_germany_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - Germany") is True
+
+    def test_australia_excluded(self):
+        assert is_title_geo_excluded("Technical Account Manager, Australia") is True
+
+    def test_singapore_excluded(self):
+        assert is_title_geo_excluded("Customer Engineer - Singapore") is True
+
+    def test_london_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect, London") is True
+
+    def test_toronto_excluded(self):
+        assert is_title_geo_excluded("Customer Success Manager - Toronto") is True
+
+    def test_case_insensitive(self):
+        assert is_title_geo_excluded("solutions engineer, emea") is True
+
+    # Should NOT be excluded
+    def test_southeast_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - Southeast") is False
+
+    def test_west_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - West") is False
+
+    def test_commercial_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect, Commercial") is False
+
+    def test_plain_csm_not_excluded(self):
+        assert is_title_geo_excluded("Customer Success Manager") is False
+
+    def test_bridge_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer, Bridge") is False
+
+    def test_dc_virginia_not_excluded(self):
+        assert is_title_geo_excluded("Public Sector Solutions Architect - D.C. / Northern Virginia") is False
+
+    def test_expansion_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - Commercial (Expansion Sales)") is False
+
+    def test_enterprise_not_excluded(self):
+        assert is_title_geo_excluded("Enterprise Customer Success Manager") is False

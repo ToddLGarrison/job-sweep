@@ -8,6 +8,7 @@ from deduplicator import is_duplicate
 from discovery import run_discovery
 from matcher import get_role_type, match_title
 from models import Opportunity
+from geo_filter import is_title_geo_excluded
 from red_flag_detector import check_red_flags
 
 
@@ -62,6 +63,10 @@ def main() -> None:
 
                 matched = match_title(listing.title)
                 if not matched:
+                    continue
+
+                if is_title_geo_excluded(listing.title):
+                    geo_filtered += 1
                     continue
 
                 if is_duplicate(company, listing):

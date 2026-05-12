@@ -14,6 +14,7 @@ from config import (
 )
 from deduplicator import is_duplicate
 from models import Company, DiscoveryListing, JobListing, Opportunity
+from geo_filter import is_title_geo_excluded
 from red_flag_detector import check_red_flags
 
 
@@ -99,6 +100,10 @@ def _process_listings(
 
         matched_title, match_type, matched_kws = _classify(listing)
         if match_type is None:
+            continue
+
+        if is_title_geo_excluded(listing.title):
+            stats.geo_filtered += 1
             continue
 
         seen_urls.add(listing.url)

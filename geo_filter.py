@@ -111,6 +111,51 @@ def location_from_lever(job: dict) -> str:
     return ""
 
 
+_TITLE_GEO_CODES = {
+    "emea", "apac", "latam", "anz", "dach", "uki", "mena", "cee",
+}
+
+_TITLE_GEO_WORDS = {
+    # regions
+    "europe", "asia pacific", "asia-pacific", "middle east", "africa",
+    "nordics", "nordic",
+    # countries
+    "japan", "germany", "france", "italy", "spain", "netherlands",
+    "australia", "india", "singapore", "canada", "ireland", "israel",
+    "brazil", "mexico", "sweden", "norway", "denmark", "finland",
+    "switzerland", "belgium", "poland", "portugal", "austria",
+    "czech republic", "hungary", "romania", "turkey", "south korea",
+    "china", "taiwan", "new zealand",
+    # cities
+    "london", "paris", "berlin", "tokyo", "sydney", "amsterdam",
+    "dublin", "tel aviv", "stockholm", "copenhagen", "oslo", "helsinki",
+    "zurich", "brussels", "warsaw", "prague", "vienna", "budapest",
+    "bucharest", "toronto", "vancouver", "montreal",
+}
+
+# "UK" is two letters — match only when surrounded by non-alpha (word boundary)
+_TITLE_GEO_ABBREVS_STRICT = {"uk", "namer"}
+
+
+def is_title_geo_excluded(title: str) -> bool:
+    """Return True if the job title contains an explicit non-US geographic restriction."""
+    lower = title.lower()
+
+    for code in _TITLE_GEO_CODES:
+        if re.search(rf"\b{re.escape(code)}\b", lower):
+            return True
+
+    for abbrev in _TITLE_GEO_ABBREVS_STRICT:
+        if re.search(rf"\b{re.escape(abbrev)}\b", lower):
+            return True
+
+    for phrase in _TITLE_GEO_WORDS:
+        if phrase in lower:
+            return True
+
+    return False
+
+
 def location_from_ashby(job: dict) -> str:
     """Extract location string from an Ashby API job dict."""
     loc = job.get("locationName", "") or job.get("location", "")
