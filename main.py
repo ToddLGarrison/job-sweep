@@ -6,15 +6,17 @@ import notion_api as notion
 from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
 from deduplicator import is_duplicate
 from discovery import run_discovery
+from expiry_checker import run_expiry_check
+from geo_filter import is_title_geo_excluded
 from matcher import get_role_type, match_title
 from models import Opportunity
-from geo_filter import is_title_geo_excluded
 from red_flag_detector import check_red_flags
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check ATS boards for matching roles and write to Notion.")
     parser.add_argument("--dry-run", action="store_true", help="Print what would be written without making Notion changes")
+    parser.add_argument("--skip-expiry", action="store_true", help="Skip the URL expiry check")
     args = parser.parse_args()
 
     today = datetime.date.today()
@@ -123,6 +125,11 @@ def main() -> None:
     # --- Discovery ---
     disc = run_discovery(dry_run=args.dry_run) if DISCOVERY_ENABLED else None
 
+    # --- Expiry check ---
+    expiry = None
+    if not args.skip_expiry:
+        expiry = run_expiry_check(dry_run=args.dry_run)
+
     # --- Run summary ---
     print(f"\n=== Job Sweep Complete — {today.isoformat()} ===")
     print(f"Companies swept: {swept}")
@@ -155,6 +162,18 @@ def main() -> None:
         print("\nERRORS:")
         for cname, msg in error_list:
             print(f"  - {cname}: {msg}")
+
+    if expiry is not None:
+        print("\n--- Expiry Check ---")
+        print(f"Roles still live (checked): {expiry.still_live}")
+        print(f"Roles newly missed (1+ strike): {expiry.newly_missed}")
+        print(f"Roles auto-closed (expired): {expiry.auto_closed}")
+        if expiry.errors:
+            print(f"Expiry check errors: {expiry.errors}")
+        if expiry.closed_roles:
+            print("\nROLES AUTO-CLOSED (EXPIRED):")
+            for role in expiry.closed_roles:
+                print(f"  - {role}")
 
     if disc is not None:
         print("\n--- Discovery ---")

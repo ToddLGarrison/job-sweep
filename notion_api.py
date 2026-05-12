@@ -126,6 +126,53 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
     )
 
 
+def fetch_active_opportunities() -> list[dict]:
+    """Fetch opportunities in stages eligible for expiry checking."""
+    stages = ["Qualification", "Prioritized", "Create Resume", "Contacted / Applied"]
+    filter_clauses = [
+        {"property": "Stage", "select": {"equals": s}} for s in stages
+    ]
+    opps = []
+    cursor = None
+    while True:
+        kwargs: dict = {"filter": {"or": filter_clauses}}
+        if cursor:
+            kwargs["start_cursor"] = cursor
+        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        for page in resp["results"]:
+            props = page["properties"]
+            name = _get_title(props.get("Name", {}))
+            url = props.get("Job URL", {}).get("url", "") or ""
+            misses_prop = props.get("Consecutive Misses", {})
+            consecutive_misses = int(misses_prop.get("number") or 0)
+            opps.append({
+                "page_id": page["id"],
+                "name": name,
+                "url": url,
+                "consecutive_misses": consecutive_misses,
+            })
+        if not resp.get("has_more"):
+            break
+        cursor = resp["next_cursor"]
+    return opps
+
+
+def update_opportunity_expiry(
+    page_id: str,
+    consecutive_misses: int,
+    stage: Optional[str] = None,
+    dry_run: bool = False,
+) -> None:
+    properties: dict = {"Consecutive Misses": {"number": consecutive_misses}}
+    if stage:
+        properties["Stage"] = {"select": {"name": stage}}
+    if dry_run:
+        action = f"close + misses={consecutive_misses}" if stage else f"misses={consecutive_misses}"
+        print(f"  [DRY RUN] Would update expiry {page_id}: {action}")
+        return
+    _client.pages.update(page_id=page_id, properties=properties)
+
+
 def update_company(page_id: str, hiring: Optional[str], dry_run: bool = False) -> None:
     today = datetime.date.today().isoformat()
     properties: dict = {"Last Swept": {"date": {"start": today}}}
