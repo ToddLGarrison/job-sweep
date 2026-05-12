@@ -15,6 +15,8 @@ class Company:
 class JobListing:
     title: str
     url: str
+    location: str = ""
+    description: str = ""
 
 
 @dataclass
@@ -25,6 +27,7 @@ class DiscoveryListing:
     ats: str
     slug: str
     description: str = ""
+    location: str = ""
 
 
 @dataclass
@@ -38,3 +41,4 @@ class Opportunity:
     notes: Optional[str] = None
     source: str = "Job Sweep"
     description: Optional[str] = None
+    location: str = ""

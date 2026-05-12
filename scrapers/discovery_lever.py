@@ -2,20 +2,26 @@ import re
 
 import requests
 
+from geo_filter import is_us_or_remote, location_from_lever
 from models import DiscoveryListing
 
 
-def fetch_all_jobs(company: dict) -> list[DiscoveryListing]:
+def fetch_all_jobs(company: dict) -> tuple[list[DiscoveryListing], int]:
     slug = company["slug"]
     url = f"https://api.lever.co/v0/postings/{slug}?mode=json"
     resp = requests.get(url, timeout=15)
     resp.raise_for_status()
     data = resp.json()
     results = []
+    geo_filtered = 0
     for job in data:
         title = job.get("text", "")
         apply_url = job.get("hostedUrl", "")
         if not title or not apply_url:
+            continue
+        location = location_from_lever(job)
+        if not is_us_or_remote(location):
+            geo_filtered += 1
             continue
         results.append(DiscoveryListing(
             title=title,
@@ -24,8 +30,9 @@ def fetch_all_jobs(company: dict) -> list[DiscoveryListing]:
             ats="Lever",
             slug=slug,
             description=_build_description(job),
+            location=location,
         ))
-    return results
+    return results, geo_filtered
 
 
 def _build_description(job: dict) -> str:
@@ -44,4 +51,5 @@ def _build_description(job: dict) -> str:
 
 
 def _strip_html(text: str) -> str:
-    return re.sub(r"<[^>]+>", " ", text)
+    import html
+    return html.unescape(re.sub(r"<[^>]+>", " ", text))

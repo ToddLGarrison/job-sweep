@@ -117,6 +117,8 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
         properties["Notes"] = {"rich_text": [{"text": {"content": opp.notes}}]}
     if opp.description:
         properties["Description"] = {"rich_text": [{"text": {"content": opp.description}}]}
+    if opp.listing.location:
+        properties["Location"] = {"rich_text": [{"text": {"content": opp.listing.location}}]}
     if dry_run:
         print(f"  [DRY RUN] Would create: {name}")
         return

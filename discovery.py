@@ -14,6 +14,7 @@ from config import (
 )
 from deduplicator import is_duplicate
 from models import Company, DiscoveryListing, JobListing, Opportunity
+from red_flag_detector import check_red_flags
 
 
 @dataclass
@@ -23,6 +24,8 @@ class DiscoveryStats:
     new_companies: int = 0
     added_to_existing: int = 0
     dupes: int = 0
+    geo_filtered: int = 0
+    red_flagged: int = 0
     new_roles: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 
@@ -52,7 +55,8 @@ def _run_greenhouse_discovery(
 
     for keyword in DISCOVERY_TITLES:
         try:
-            listings = search_jobs(keyword)
+            listings, gf = search_jobs(keyword)
+            stats.geo_filtered += gf
         except Exception as e:
             stats.errors.append(("Greenhouse discovery", f'keyword "{keyword}": {e}'))
             continue
@@ -74,7 +78,8 @@ def _run_seed_discovery(
     seed_companies = [c for c in DISCOVERY_SEED_COMPANIES if c["ats"] == ats]
     for company in seed_companies:
         try:
-            listings = fetch_all_jobs(company)
+            listings, gf = fetch_all_jobs(company)
+            stats.geo_filtered += gf
         except Exception as e:
             stats.errors.append((company["name"], str(e)))
             continue
@@ -109,6 +114,12 @@ def _process_listings(
         if is_duplicate(company, job_listing):
             print(f"SKIP [Discovery] {listing.company_name} / {listing.title} — duplicate found")
             stats.dupes += 1
+            continue
+
+        flags = check_red_flags(listing.title, listing.description)
+        if flags:
+            print(f"RED FLAG [Discovery] {listing.company_name} / {listing.title} — {', '.join(f.code for f in flags)}")
+            stats.red_flagged += 1
             continue
 
         role_type = DISCOVERY_ROLE_TYPE_MAP.get(matched_title or "", "Other")

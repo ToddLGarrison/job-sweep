@@ -3,10 +3,11 @@ from urllib.parse import quote
 
 import requests
 
+from geo_filter import is_us_or_remote, location_from_greenhouse
 from models import DiscoveryListing
 
 
-def search_jobs(keyword: str) -> list[DiscoveryListing]:
+def search_jobs(keyword: str) -> tuple[list[DiscoveryListing], int]:
     url = (
         f"https://boards-api.greenhouse.io/v1/boards/greenhouse/jobs"
         f"?content=true&q={quote(keyword)}"
@@ -15,10 +16,15 @@ def search_jobs(keyword: str) -> list[DiscoveryListing]:
     resp.raise_for_status()
     data = resp.json()
     results = []
+    geo_filtered = 0
     for job in data.get("jobs", []):
         title = job.get("title", "")
         apply_url = job.get("absolute_url", "")
         if not title or not apply_url:
+            continue
+        location = location_from_greenhouse(job)
+        if not is_us_or_remote(location):
+            geo_filtered += 1
             continue
         slug = _extract_slug(apply_url)
         results.append(DiscoveryListing(
@@ -28,8 +34,9 @@ def search_jobs(keyword: str) -> list[DiscoveryListing]:
             ats="Greenhouse",
             slug=slug,
             description=_strip_html(job.get("content", "")),
+            location=location,
         ))
-    return results
+    return results, geo_filtered
 
 
 def _extract_slug(url: str) -> str:
@@ -46,4 +53,5 @@ def _slug_to_name(slug: str) -> str:
 
 
 def _strip_html(text: str) -> str:
-    return re.sub(r"<[^>]+>", " ", text)
+    import html
+    return html.unescape(re.sub(r"<[^>]+>", " ", text))

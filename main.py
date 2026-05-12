@@ -8,6 +8,7 @@ from deduplicator import is_duplicate
 from discovery import run_discovery
 from matcher import get_role_type, match_title
 from models import Opportunity
+from red_flag_detector import check_red_flags
 
 
 def main() -> None:
@@ -23,8 +24,11 @@ def main() -> None:
     dupes = 0
     no_match = 0
     error_count = 0
+    geo_filtered = 0
+    red_flagged = 0
     new_roles: list[str] = []
     ashby_roles: list[tuple[str, str, str]] = []
+    red_flagged_roles: list[tuple[str, str, list]] = []
     error_list: list[tuple[str, str]] = []
     seen_urls: set[str] = set()
 
@@ -41,7 +45,8 @@ def main() -> None:
 
         try:
             scraper = importlib.import_module(ATS_SCRAPER_MAP[company.ats])
-            listings = scraper.fetch_jobs(company.ats_slug)
+            listings, company_geo_filtered = scraper.fetch_jobs(company.ats_slug)
+            geo_filtered += company_geo_filtered
         except Exception as e:
             error_list.append((company.name, str(e)))
             error_count += 1
@@ -64,6 +69,14 @@ def main() -> None:
                     dupes += 1
                     continue
 
+                flags = check_red_flags(listing.title, listing.description)
+                if flags:
+                    label = f"{company.name} / {listing.title}"
+                    red_flagged_roles.append((label, listing.url, flags))
+                    red_flagged += 1
+                    print(f"RED FLAG {company.name} / {listing.title} — {', '.join(f.code for f in flags)}")
+                    continue
+
                 role_type = get_role_type(matched)
                 verified = "__NO__" if company.ats == "Ashby" else "__YES__"
                 notes = None
@@ -78,6 +91,7 @@ def main() -> None:
                     verified=verified,
                     ats=company.ats,
                     notes=notes,
+                    location=listing.location,
                 )
 
                 notion.write_opportunity(opp, dry_run=args.dry_run)
@@ -109,6 +123,8 @@ def main() -> None:
     print(f"Companies swept: {swept}")
     print(f"New opportunities added: {added}")
     print(f"Duplicates skipped: {dupes}")
+    print(f"Geo-filtered (non-US): {geo_filtered}")
+    print(f"Red-flagged (skipped): {red_flagged}")
     print(f"Companies with no matching roles: {no_match}")
     print(f"Errors: {error_count}")
 
@@ -124,6 +140,12 @@ def main() -> None:
         for cname, title, url in ashby_roles:
             print(f"  - {cname} / {title}: {url}")
 
+    if red_flagged_roles:
+        print("\nRED-FLAGGED ROLES SKIPPED:")
+        for label, url, flags in red_flagged_roles:
+            flag_str = ", ".join(f.code for f in flags)
+            print(f"  - {label} [{flag_str}]: {url}")
+
     if error_list:
         print("\nERRORS:")
         for cname, msg in error_list:
@@ -136,6 +158,8 @@ def main() -> None:
         print(f"New companies auto-created: {disc.new_companies}")
         print(f"Roles added to existing companies: {disc.added_to_existing}")
         print(f"Roles skipped as duplicates: {disc.dupes}")
+        print(f"Geo-filtered (non-US): {disc.geo_filtered}")
+        print(f"Red-flagged (skipped): {disc.red_flagged}")
 
         if disc.new_roles:
             print("\nDISCOVERY — NEW ROLES:")
