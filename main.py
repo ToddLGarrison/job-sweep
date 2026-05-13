@@ -7,7 +7,7 @@ from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
 from deduplicator import is_duplicate
 from discovery import run_discovery
 from expiry_checker import run_expiry_check
-from geo_filter import is_title_geo_excluded
+from geo_filter import check_description_geo, is_title_geo_excluded
 from matcher import get_role_type, match_title
 from models import Opportunity
 from red_flag_detector import check_red_flags
@@ -67,7 +67,8 @@ def main() -> None:
                 if not matched:
                     continue
 
-                if is_title_geo_excluded(listing.title):
+                if is_title_geo_excluded(listing.title) or \
+                        check_description_geo(listing.description):
                     geo_filtered += 1
                     continue
 

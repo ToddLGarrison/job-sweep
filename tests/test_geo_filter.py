@@ -1,5 +1,6 @@
 import pytest
 from geo_filter import (
+    check_description_geo,
     is_title_geo_excluded,
     is_us_or_remote,
     location_from_greenhouse,
@@ -275,3 +276,89 @@ class TestIsTitleGeoExcluded:
 
     def test_enterprise_not_excluded(self):
         assert is_title_geo_excluded("Enterprise Customer Success Manager") is False
+
+
+# --- is_us_or_remote: Indian city + state-code edge cases ---
+
+class TestIsUsOrRemoteIndianCities:
+    def test_hyderabad_in_rejected(self):
+        assert is_us_or_remote("Hyderabad IN") is False
+
+    def test_pune_mh_rejected(self):
+        assert is_us_or_remote("Pune MH") is False
+
+    def test_chennai_tn_rejected(self):
+        assert is_us_or_remote("Chennai TN") is False
+
+    def test_noida_rejected(self):
+        assert is_us_or_remote("Noida") is False
+
+    def test_gurgaon_rejected(self):
+        assert is_us_or_remote("Gurgaon") is False
+
+    def test_gurugram_rejected(self):
+        assert is_us_or_remote("Gurugram") is False
+
+    def test_karachi_rejected(self):
+        assert is_us_or_remote("Karachi") is False
+
+    def test_dhaka_rejected(self):
+        assert is_us_or_remote("Dhaka") is False
+
+    def test_colombo_rejected(self):
+        assert is_us_or_remote("Colombo") is False
+
+    def test_ho_chi_minh_rejected(self):
+        assert is_us_or_remote("Ho Chi Minh City") is False
+
+    def test_new_york_ny_still_passes(self):
+        assert is_us_or_remote("New York NY") is True
+
+    def test_austin_tx_still_passes(self):
+        assert is_us_or_remote("Austin TX") is True
+
+    def test_boston_ma_still_passes(self):
+        assert is_us_or_remote("Boston MA") is True
+
+    def test_remote_still_passes(self):
+        assert is_us_or_remote("Remote") is True
+
+    def test_empty_still_passes(self):
+        assert is_us_or_remote("") is True
+
+
+# --- check_description_geo ---
+
+class TestCheckDescriptionGeo:
+    def test_based_in_hyderabad_office(self):
+        assert check_description_geo("This role is based in our Hyderabad office") is True
+
+    def test_located_in_singapore(self):
+        assert check_description_geo("Must be located in Singapore") is True
+
+    def test_our_pune_office(self):
+        assert check_description_geo("Our Pune office is growing") is True
+
+    def test_based_in_india(self):
+        assert check_description_geo("This position is based in India") is True
+
+    def test_working_from_london(self):
+        assert check_description_geo("Working from our London headquarters") is True
+
+    def test_this_role_is_in_germany(self):
+        assert check_description_geo("This role is in Germany") is True
+
+    def test_based_in_new_york_not_flagged(self):
+        assert check_description_geo("Based in New York, NY") is False
+
+    def test_remote_role_us_not_flagged(self):
+        assert check_description_geo("Remote role based in the US") is False
+
+    def test_no_geo_signal_not_flagged(self):
+        assert check_description_geo("No geo signal here") is False
+
+    def test_empty_string_not_flagged(self):
+        assert check_description_geo("") is False
+
+    def test_generic_office_mention_not_flagged(self):
+        assert check_description_geo("You will work closely with our sales team") is False

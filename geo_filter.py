@@ -23,21 +23,56 @@ _US_STATE_ABBREVS = {
 }
 
 _FOREIGN_SIGNALS = {
+    # North America (non-US)
     "canada", "ontario", "british columbia", "alberta", "quebec",
-    "united kingdom", "uk", "england", "scotland", "wales",
+    "toronto", "montreal", "vancouver bc",
+    # UK / Ireland
+    "united kingdom", "uk", "england", "scotland", "wales", "ireland",
+    "london", "dublin",
+    # Europe
     "germany", "france", "netherlands", "sweden", "denmark",
     "norway", "finland", "switzerland", "austria", "belgium",
-    "spain", "italy", "portugal", "ireland", "poland",
-    "australia", "new zealand", "singapore", "japan", "india",
-    "israel", "brazil", "mexico",
+    "spain", "italy", "portugal", "poland",
+    "berlin", "amsterdam", "paris, france", "stockholm", "copenhagen",
+    "oslo", "helsinki", "zurich", "brussels", "warsaw", "prague",
+    "vienna", "budapest", "bucharest",
+    # Israel
+    "israel", "tel aviv",
+    # APAC — East Asia
+    "japan", "china", "taiwan", "south korea",
+    "tokyo", "beijing", "shanghai", "seoul",
+    # APAC — Southeast Asia
+    "singapore", "vietnam", "indonesia", "philippines",
+    "ho chi minh city", "hanoi", "surabaya", "cebu",
+    # APAC — South Asia
+    "india", "pakistan", "bangladesh", "sri lanka", "nepal",
+    "hyderabad", "pune", "chennai", "kolkata", "ahmedabad",
+    "jaipur", "surat", "lucknow", "kanpur", "nagpur",
+    "noida", "gurgaon", "gurugram", "coimbatore", "kochi",
+    "thiruvananthapuram", "bhubaneswar", "chandigarh", "indore", "patna",
+    "karachi", "lahore", "dhaka", "colombo", "kathmandu",
+    # APAC — Oceania
+    "australia", "new zealand", "sydney", "melbourne",
+    # LatAm
+    "brazil", "mexico",
+    # Middle East / Africa
     "emea", "apac", "latam", "amer", "asia pacific",
     "europe", "european union",
-    "london", "toronto", "montreal", "vancouver bc", "sydney",
-    "melbourne", "berlin", "amsterdam", "paris, france",
-    "tel aviv",
 }
 
 _REMOTE_SIGNALS = {"remote", "work from home", "wfh", "anywhere", "distributed", "us only", "usa only"}
+
+# Pattern templates for check_description_geo.
+# {sig} is replaced with the escaped foreign signal.
+_DESC_GEO_PATTERNS = [
+    r"based in\s+(?:our\s+)?(?:the\s+)?{sig}",
+    r"located in\s+(?:our\s+)?(?:the\s+)?{sig}",
+    r"must be located in\s+{sig}",
+    r"working from\s+(?:our\s+)?(?:the\s+)?{sig}",
+    r"this role is in\s+{sig}",
+    r"position is based in\s+{sig}",
+    r"our\s+{sig}\s+(?:office|team|headquarters|hq)",
+]
 
 
 def is_us_or_remote(location: str) -> bool:
@@ -47,10 +82,12 @@ def is_us_or_remote(location: str) -> bool:
 
     loc = location.strip().lower()
 
+    # 1. Explicit remote / US signals → accept
     for signal in _REMOTE_SIGNALS:
         if signal in loc:
             return True
 
+    # 2. Non-US terms → reject (checked BEFORE state abbreviations)
     for signal in _FOREIGN_SIGNALS:
         if signal in loc:
             # "vancouver, wa" contains "wa" but not "vancouver bc"
@@ -58,13 +95,12 @@ def is_us_or_remote(location: str) -> bool:
                 return True
             return False
 
-    # "City, ST" pattern — check state abbreviation after comma
+    # 3. "City, ST" pattern — check state abbreviation after comma
     m = re.search(r",\s*([a-z]{2})(?:\s|$|,)", loc)
     if m:
         abbrev = m.group(1)
         if abbrev in _US_STATE_ABBREVS:
             return True
-        # Two-letter non-US codes (bc, on, ab for Canada provinces)
         _CA_PROVINCES = {"bc", "on", "ab", "qc", "mb", "sk", "ns", "nb", "nl", "pe"}
         if abbrev in _CA_PROVINCES:
             return False
@@ -77,8 +113,24 @@ def is_us_or_remote(location: str) -> bool:
     if "united states" in loc or ", us" in loc or "(us)" in loc:
         return True
 
-    # Bare city names with no country/state signal — assume US/remote
+    # 4. Default — bare city with no signal, assume US/remote
     return True
+
+
+def check_description_geo(description: str) -> bool:
+    """Return True if the description contains a phrase indicating a non-US location."""
+    if not description:
+        return False
+
+    lower = description.lower()
+
+    for signal in _FOREIGN_SIGNALS:
+        sig = re.escape(signal)
+        for tmpl in _DESC_GEO_PATTERNS:
+            if re.search(tmpl.format(sig=sig), lower):
+                return True
+
+    return False
 
 
 def location_from_greenhouse(job: dict) -> str:

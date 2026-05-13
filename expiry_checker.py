@@ -84,18 +84,33 @@ def run_expiry_check(dry_run: bool = False) -> ExpiryStats:
         if live:
             stats.still_live += 1
             if consecutive_misses > 0:
-                notion.update_opportunity_expiry(page_id, consecutive_misses=0, dry_run=dry_run)
+                try:
+                    notion.update_opportunity_expiry(page_id, consecutive_misses=0, dry_run=dry_run)
+                except Exception as e:
+                    stats.errors += 1
+                    print(f"WARNING: Could not update expiry for {name}: {e}")
+                    continue
         else:
             new_count, should_close = _apply_miss(consecutive_misses)
             stats.newly_missed += 1
             if should_close:
                 stats.auto_closed += 1
                 stats.closed_roles.append(name)
-                notion.update_opportunity_expiry(
-                    page_id, consecutive_misses=new_count, stage="Closed Lost", dry_run=dry_run
-                )
+                try:
+                    notion.update_opportunity_expiry(
+                        page_id, consecutive_misses=new_count, stage="Closed Lost", dry_run=dry_run
+                    )
+                except Exception as e:
+                    stats.errors += 1
+                    print(f"WARNING: Could not update expiry for {name}: {e}")
+                    continue
                 print(f"AUTO-CLOSE {name} — {new_count} consecutive misses")
             else:
-                notion.update_opportunity_expiry(page_id, consecutive_misses=new_count, dry_run=dry_run)
+                try:
+                    notion.update_opportunity_expiry(page_id, consecutive_misses=new_count, dry_run=dry_run)
+                except Exception as e:
+                    stats.errors += 1
+                    print(f"WARNING: Could not update expiry for {name}: {e}")
+                    continue
 
     return stats
