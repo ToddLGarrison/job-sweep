@@ -132,6 +132,9 @@ DISCOVERY_ROLE_TYPE_MAP = {
     "Forward Deployed Engineer": "Solutions Engineer",
 }
 
+BUILTINBOSTON_ENABLED = True
+VENTUREFIZZ_ENABLED = True
+
 # Lever and Ashby companies not yet in the Notion Companies DB.
 # Format: {"name": "Company Name", "ats": "Lever" | "Ashby", "slug": "companyslug"}
 DISCOVERY_SEED_COMPANIES: list[dict] = []

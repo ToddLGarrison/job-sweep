@@ -4,6 +4,7 @@ from typing import Optional
 
 import notion_api as notion
 from config import (
+    BUILTINBOSTON_ENABLED,
     DISCOVERY_ENABLED,
     DISCOVERY_JD_KEYWORDS,
     DISCOVERY_ROLE_TYPE_MAP,
@@ -11,6 +12,7 @@ from config import (
     DISCOVERY_TITLES,
     SECONDARY_JD_SCAN_ENABLED,
     TITLE_EXCLUDE,
+    VENTUREFIZZ_ENABLED,
 )
 from deduplicator import is_duplicate
 from models import Company, DiscoveryListing, JobListing, Opportunity
@@ -42,6 +44,10 @@ def run_discovery(dry_run: bool = False) -> DiscoveryStats:
     _run_greenhouse_discovery(stats, seen_urls, today, dry_run)
     _run_seed_discovery("Lever", stats, seen_urls, today, dry_run)
     _run_seed_discovery("Ashby", stats, seen_urls, today, dry_run)
+    if BUILTINBOSTON_ENABLED:
+        _run_builtinboston_discovery(stats, seen_urls, today, dry_run)
+    if VENTUREFIZZ_ENABLED:
+        _run_venturefizz_discovery(stats, seen_urls, today, dry_run)
 
     return stats
 
@@ -83,6 +89,40 @@ def _run_seed_discovery(
             stats.geo_filtered += gf
         except Exception as e:
             stats.errors.append((company["name"], str(e)))
+            continue
+        _process_listings(listings, stats, seen_urls, today, dry_run)
+
+
+def _run_builtinboston_discovery(
+    stats: DiscoveryStats,
+    seen_urls: set[str],
+    today: datetime.date,
+    dry_run: bool,
+) -> None:
+    from scrapers.discovery_builtinboston import fetch_listings
+
+    for keyword in DISCOVERY_TITLES:
+        try:
+            listings = fetch_listings(keyword)
+        except Exception as e:
+            stats.errors.append(("BuiltInBoston discovery", f'keyword "{keyword}": {e}'))
+            continue
+        _process_listings(listings, stats, seen_urls, today, dry_run)
+
+
+def _run_venturefizz_discovery(
+    stats: DiscoveryStats,
+    seen_urls: set[str],
+    today: datetime.date,
+    dry_run: bool,
+) -> None:
+    from scrapers.discovery_venturefizz import fetch_listings
+
+    for keyword in DISCOVERY_TITLES:
+        try:
+            listings = fetch_listings(keyword)
+        except Exception as e:
+            stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))
             continue
         _process_listings(listings, stats, seen_urls, today, dry_run)
 
