@@ -15,7 +15,7 @@ from curl_cffi import requests
 from bs4 import BeautifulSoup
 
 from models import DiscoveryListing
-from scrapers.ats_detector import detect_ats
+from scrapers.ats_detector import detect_ats, extract_ats_domain
 
 _BASE_URL = "https://www.builtinboston.com"
 _SEARCH_URL = _BASE_URL + "/jobs?search={keyword}&remote=true"
@@ -23,17 +23,18 @@ _IMPERSONATE = "chrome120"
 _REQUEST_DELAY = 1.0  # seconds between detail page fetches
 
 
-def fetch_listings(keyword: str) -> list[DiscoveryListing]:
+def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, impersonate=_IMPERSONATE, timeout=20)
         resp.raise_for_status()
     except Exception as e:
         print(f"ERROR [BuiltInBoston] GET {url}: {e}")
-        return []
+        return [], 0
 
     cards = _parse_listing_page(resp.text)
     results = []
+    unknown_ats = 0
     for company_name, title, detail_url in cards:
         try:
             time.sleep(_REQUEST_DELAY)
@@ -47,6 +48,9 @@ def fetch_listings(keyword: str) -> list[DiscoveryListing]:
 
         detected = detect_ats(apply_url)
         if detected is None:
+            domain = extract_ats_domain(apply_url)
+            print(f"UNKNOWN ATS [BuiltInBoston] {company_name} | {title} | {domain}")
+            unknown_ats += 1
             continue
 
         ats, slug = detected
@@ -58,7 +62,7 @@ def fetch_listings(keyword: str) -> list[DiscoveryListing]:
             slug=slug,
         ))
 
-    return results
+    return results, unknown_ats
 
 
 def _parse_listing_page(html: str) -> list[tuple[str, str, str]]:

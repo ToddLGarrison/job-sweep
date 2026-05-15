@@ -157,7 +157,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results = fetch_listings("Sales Engineer")
+            results, _ = fetch_listings("Sales Engineer")
         assert len(results) == 1
         assert results[0].title == "Sales Engineer (Pre-Sales)"
         assert results[0].company_name == "Checkly"
@@ -165,7 +165,7 @@ class TestFetchListings:
         assert results[0].slug == "checkly"
         assert "ashbyhq.com" in results[0].url
 
-    def test_skips_unknown_ats(self):
+    def test_skips_unknown_ats(self, capsys):
         listing = _make_listing_html([
             {"title": "Director, Solutions Engineering", "url": "https://venturefizz.com/job/snyk-se/"},
         ])
@@ -176,13 +176,15 @@ class TestFetchListings:
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results = fetch_listings("Solutions Engineer")
+            results, unknown_ats = fetch_listings("Solutions Engineer")
         assert results == []
+        assert unknown_ats == 1
+        assert "UNKNOWN ATS [VentureFizz]" in capsys.readouterr().out
 
     def test_listing_http_error_returns_empty(self):
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get:
             mock_get.side_effect = Exception("DNS failure")
-            results = fetch_listings("Solutions Engineer")
+            results, _ = fetch_listings("Solutions Engineer")
         assert results == []
 
     def test_detail_http_error_skips_job(self):
@@ -216,7 +218,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = side_effect
-            results = fetch_listings("Solutions Engineer")
+            results, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 1
         assert results[0].company_name == "Gainsight"
 
@@ -232,7 +234,7 @@ class TestFetchListings:
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
             # fetch_listings itself doesn't filter geo — that happens in _process_listings
-            results = fetch_listings("Solutions Engineer")
+            results, _ = fetch_listings("Solutions Engineer")
         # The scraper returns the listing; geo filtering is done upstream
         assert len(results) == 1
 
@@ -247,7 +249,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results = fetch_listings("Solutions Engineer")
+            results, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 1
         assert results[0].ats == "Workday"
         assert results[0].slug == "snyk.wd103/External"
@@ -260,5 +262,5 @@ class TestFetchListings:
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
              patch("scrapers.discovery_venturefizz.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results = fetch_listings("Solutions Engineer")
+            results, _ = fetch_listings("Solutions Engineer")
         assert results == []

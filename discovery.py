@@ -29,6 +29,7 @@ class DiscoveryStats:
     dupes: int = 0
     geo_filtered: int = 0
     red_flagged: int = 0
+    unknown_ats: int = 0
     new_roles: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 
@@ -103,7 +104,8 @@ def _run_builtinboston_discovery(
 
     for keyword in DISCOVERY_TITLES:
         try:
-            listings = fetch_listings(keyword)
+            listings, unk = fetch_listings(keyword)
+            stats.unknown_ats += unk
         except Exception as e:
             stats.errors.append(("BuiltInBoston discovery", f'keyword "{keyword}": {e}'))
             continue
@@ -120,7 +122,8 @@ def _run_venturefizz_discovery(
 
     for keyword in DISCOVERY_TITLES:
         try:
-            listings = fetch_listings(keyword)
+            listings, unk = fetch_listings(keyword)
+            stats.unknown_ats += unk
         except Exception as e:
             stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))
             continue

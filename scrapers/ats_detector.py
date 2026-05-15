@@ -3,6 +3,16 @@ import re
 from urllib.parse import urlparse
 
 
+def extract_ats_domain(url: str) -> str:
+    """Return the hostname from a URL (e.g. 'jobs.jobvite.com'), or '' if unparseable."""
+    if not url:
+        return ""
+    try:
+        return urlparse(url).hostname or ""
+    except Exception:
+        return ""
+
+
 def detect_ats(url: str) -> tuple[str, str] | None:
     """Return (ats_name, slug) or None if the URL doesn't match a known ATS.
 

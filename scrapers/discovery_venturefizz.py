@@ -15,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from models import DiscoveryListing
-from scrapers.ats_detector import detect_ats
+from scrapers.ats_detector import detect_ats, extract_ats_domain
 
 _SEARCH_URL = "https://venturefizz.com/jobs?q={keyword}"
 _HEADERS = {
@@ -27,17 +27,18 @@ _HEADERS = {
 _REQUEST_DELAY = 0.5  # seconds between detail page fetches
 
 
-def fetch_listings(keyword: str) -> list[DiscoveryListing]:
+def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, headers=_HEADERS, timeout=20)
         resp.raise_for_status()
     except Exception as e:
         print(f"ERROR [VentureFizz] GET {url}: {e}")
-        return []
+        return [], 0
 
     job_cards = _parse_listing_page(resp.text)
     results = []
+    unknown_ats = 0
     for title, detail_url in job_cards:
         try:
             time.sleep(_REQUEST_DELAY)
@@ -51,6 +52,9 @@ def fetch_listings(keyword: str) -> list[DiscoveryListing]:
 
         detected = detect_ats(apply_url)
         if detected is None:
+            domain = extract_ats_domain(apply_url)
+            print(f"UNKNOWN ATS [VentureFizz] {company_name} | {title} | {domain}")
+            unknown_ats += 1
             continue
 
         ats, slug = detected
@@ -62,7 +66,7 @@ def fetch_listings(keyword: str) -> list[DiscoveryListing]:
             slug=slug,
         ))
 
-    return results
+    return results, unknown_ats
 
 
 def _parse_listing_page(html: str) -> list[tuple[str, str]]:

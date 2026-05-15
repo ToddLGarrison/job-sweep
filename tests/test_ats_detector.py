@@ -1,6 +1,6 @@
 import pytest
 
-from scrapers.ats_detector import detect_ats
+from scrapers.ats_detector import detect_ats, extract_ats_domain
 
 
 class TestDetectAts:
@@ -88,3 +88,28 @@ class TestDetectAts:
 
     def test_non_ats_url_returns_none(self):
         assert detect_ats("https://www.linkedin.com/jobs/view/123") is None
+
+
+class TestExtractAtsDomain:
+    def test_known_ats_url(self):
+        url = "https://job-boards.greenhouse.io/snyk/jobs/7920513905"
+        assert extract_ats_domain(url) == "job-boards.greenhouse.io"
+
+    def test_unknown_ats_url(self):
+        assert extract_ats_domain("https://searchjobs.libertymutualgroup.com/careers/job/123") == "searchjobs.libertymutualgroup.com"
+
+    def test_jobvite_domain(self):
+        assert extract_ats_domain("https://jobs.jobvite.com/acme/job/abc123") == "jobs.jobvite.com"
+
+    def test_icims_domain(self):
+        assert extract_ats_domain("https://careers.icims.com/jobs/1234/se/job") == "careers.icims.com"
+
+    def test_empty_string_returns_empty(self):
+        assert extract_ats_domain("") == ""
+
+    def test_unparseable_input_returns_empty(self):
+        assert extract_ats_domain("not a url") == ""
+
+    def test_strips_path_and_query(self):
+        url = "https://recruiting.ultipro.com/ACM1000/JobBoard/abc?utm_source=vf"
+        assert extract_ats_domain(url) == "recruiting.ultipro.com"
