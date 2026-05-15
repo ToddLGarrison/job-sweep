@@ -43,6 +43,8 @@ ATS_SCRAPER_MAP = {
     "Greenhouse": "scrapers.greenhouse",
     "Lever": "scrapers.lever",
     "Ashby": "scrapers.ashby",
+    "SmartRecruiters": "scrapers.smartrecruiters",
+    "Comeet": "scrapers.comeet",
 }
 
 # --- Discovery ---
