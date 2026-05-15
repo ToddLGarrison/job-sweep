@@ -135,6 +135,15 @@ DISCOVERY_ROLE_TYPE_MAP = {
 BUILTINBOSTON_ENABLED = True
 VENTUREFIZZ_ENABLED = True
 
+# --- Email digest ---
+
+DIGEST_EMAIL_TO = os.environ.get("DIGEST_EMAIL_TO")
+DIGEST_EMAIL_FROM = os.environ.get("DIGEST_EMAIL_FROM")
+DIGEST_SMTP_HOST = os.environ.get("DIGEST_SMTP_HOST")
+DIGEST_SMTP_PORT = int(os.environ.get("DIGEST_SMTP_PORT", "587"))
+DIGEST_SMTP_USER = os.environ.get("DIGEST_SMTP_USER")
+DIGEST_SMTP_PASSWORD = os.environ.get("DIGEST_SMTP_PASSWORD")
+
 # Lever and Ashby companies not yet in the Notion Companies DB.
 # Format: {"name": "Company Name", "ats": "Lever" | "Ashby", "slug": "companyslug"}
 DISCOVERY_SEED_COMPANIES: list[dict] = []

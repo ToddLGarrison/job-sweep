@@ -5,6 +5,14 @@ import importlib
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
 from deduplicator import is_duplicate
+from digest import (
+    build_digest,
+    build_subject,
+    merge_stats,
+    read_and_clear_last_run,
+    send_digest,
+    write_last_run,
+)
 from discovery import run_discovery
 from expiry_checker import run_expiry_check
 from geo_filter import check_description_geo, is_title_geo_excluded
@@ -17,6 +25,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Check ATS boards for matching roles and write to Notion.")
     parser.add_argument("--dry-run", action="store_true", help="Print what would be written without making Notion changes")
     parser.add_argument("--skip-expiry", action="store_true", help="Skip the URL expiry check")
+    parser.add_argument("--send-digest", action="store_true", help="Build and send the daily email digest (6am run only)")
     args = parser.parse_args()
 
     today = datetime.date.today()
@@ -195,6 +204,31 @@ def main() -> None:
             print("\nDISCOVERY — ERRORS:")
             for source, msg in disc.errors:
                 print(f"  - {source}: {msg}")
+
+    # --- Persist stats and send digest ---
+    all_errors: list[list[str]] = [[c, m] for c, m in error_list]
+    if disc:
+        all_errors += [[src, msg] for src, msg in disc.errors]
+    if expiry and expiry.errors:
+        all_errors.append(["Expiry checker", f"{expiry.errors} error(s) during expiry check"])
+
+    sweep_stats = {
+        "new_roles": new_roles,
+        "discovery_new_roles": disc.new_roles if disc else [],
+        "closed_roles": expiry.closed_roles if expiry else [],
+        "errors": all_errors,
+        "geo_filtered": geo_filtered + (disc.geo_filtered if disc else 0),
+        "red_flagged": red_flagged + (disc.red_flagged if disc else 0),
+    }
+
+    previous = read_and_clear_last_run() if args.send_digest else None
+    write_last_run(sweep_stats)
+
+    if args.send_digest:
+        combined = merge_stats(sweep_stats, previous) if previous else sweep_stats
+        subject = build_subject(combined)
+        body = build_digest(combined)
+        send_digest(subject, body)
 
 
 if __name__ == "__main__":

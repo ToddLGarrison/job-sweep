@@ -157,6 +157,27 @@ def fetch_active_opportunities() -> list[dict]:
     return opps
 
 
+def fetch_pipeline_snapshot() -> dict[str, int]:
+    """Return opportunity counts per active stage for the digest pipeline section."""
+    stages = ["Qualification", "Prioritized", "Create Resume", "Contacted / Applied"]
+    counts: dict[str, int] = {s: 0 for s in stages}
+    filter_clauses = [{"property": "Stage", "select": {"equals": s}} for s in stages]
+    cursor = None
+    while True:
+        kwargs: dict = {"filter": {"or": filter_clauses}}
+        if cursor:
+            kwargs["start_cursor"] = cursor
+        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        for page in resp["results"]:
+            stage = _get_select(page["properties"].get("Stage", {}))
+            if stage in counts:
+                counts[stage] += 1
+        if not resp.get("has_more"):
+            break
+        cursor = resp["next_cursor"]
+    return counts
+
+
 def update_opportunity_expiry(
     page_id: str,
     consecutive_misses: int,
