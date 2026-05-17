@@ -15,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from models import DiscoveryListing
-from scrapers.ats_detector import detect_ats, extract_ats_domain
+from scrapers.ats_detector import extract_ats_domain, resolve_ats
 
 _SEARCH_URL = "https://venturefizz.com/jobs?q={keyword}"
 _HEADERS = {
@@ -50,7 +50,7 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
         if not apply_url:
             continue
 
-        detected = detect_ats(apply_url)
+        detected = resolve_ats(apply_url)
         if detected is None:
             domain = extract_ats_domain(apply_url)
             print(f"UNKNOWN ATS [VentureFizz] {company_name} | {title} | {domain}")

@@ -1,6 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
 
-from scrapers.ats_detector import detect_ats, extract_ats_domain
+from scrapers.ats_detector import _resolve_cache, detect_ats, extract_ats_domain, resolve_ats
+
+
+@pytest.fixture(autouse=True)
+def clear_cache():
+    _resolve_cache.clear()
+    yield
+    _resolve_cache.clear()
 
 
 class TestDetectAts:
@@ -113,3 +122,77 @@ class TestExtractAtsDomain:
     def test_strips_path_and_query(self):
         url = "https://recruiting.ultipro.com/ACM1000/JobBoard/abc?utm_source=vf"
         assert extract_ats_domain(url) == "recruiting.ultipro.com"
+
+
+class TestResolveAts:
+    def test_direct_match_returns_without_http(self):
+        url = "https://job-boards.greenhouse.io/snyk/jobs/7920513905"
+        with patch("scrapers.ats_detector.requests.head") as mock_head, \
+             patch("scrapers.ats_detector.requests.get") as mock_get:
+            result = resolve_ats(url)
+        assert result == ("Greenhouse", "snyk")
+        mock_head.assert_not_called()
+        mock_get.assert_not_called()
+
+    def test_follows_redirect_and_returns_match(self):
+        original = "https://www.dynatrace.com/company/careers/job/12345/"
+        resolved = "https://job-boards.greenhouse.io/dynatrace/jobs/12345"
+        mock_resp = MagicMock()
+        mock_resp.url = resolved
+        with patch("scrapers.ats_detector.requests.head", return_value=mock_resp):
+            result = resolve_ats(original)
+        assert result == ("Greenhouse", "dynatrace")
+
+    def test_returns_none_when_final_url_unrecognized(self):
+        original = "https://careers.acme.com/jobs/123"
+        mock_resp = MagicMock()
+        mock_resp.url = "https://careers.acme.com/jobs/123"  # no redirect
+        with patch("scrapers.ats_detector.requests.head", return_value=mock_resp):
+            result = resolve_ats(original)
+        assert result is None
+
+    def test_handles_http_timeout_gracefully(self):
+        url = "https://careers.acme.com/jobs/123"
+        with patch("scrapers.ats_detector.requests.head", side_effect=Exception("Timeout")), \
+             patch("scrapers.ats_detector.requests.get", side_effect=Exception("Timeout")):
+            result = resolve_ats(url)
+        assert result is None
+
+    def test_handles_connection_error_gracefully(self):
+        url = "https://careers.acme.com/jobs/456"
+        with patch("scrapers.ats_detector.requests.head", side_effect=ConnectionError()), \
+             patch("scrapers.ats_detector.requests.get", side_effect=ConnectionError()):
+            result = resolve_ats(url)
+        assert result is None
+
+    def test_caches_result_same_url_fetched_once(self):
+        original = "https://careers.acme.com/jobs/789"
+        resolved = "https://jobs.lever.co/acme/aaaabbbb-cccc-dddd-eeee-ffffffffffff"
+        mock_resp = MagicMock()
+        mock_resp.url = resolved
+        with patch("scrapers.ats_detector.requests.head", return_value=mock_resp) as mock_head:
+            r1 = resolve_ats(original)
+            r2 = resolve_ats(original)
+        assert r1 == r2 == ("Lever", "acme")
+        mock_head.assert_called_once()
+
+    def test_get_fallback_when_head_fails(self):
+        original = "https://careers.acme.com/jobs/999"
+        resolved = "https://jobs.ashbyhq.com/acme/88c7e552-009b-4db7-a23b-1c3dd7779930"
+        mock_resp = MagicMock()
+        mock_resp.url = resolved
+        with patch("scrapers.ats_detector.requests.head", side_effect=Exception("HEAD rejected")), \
+             patch("scrapers.ats_detector.requests.get", return_value=mock_resp) as mock_get:
+            result = resolve_ats(original)
+        assert result == ("Ashby", "acme")
+        mock_get.assert_called_once()
+
+    def test_follow_redirects_false_skips_http(self):
+        url = "https://careers.acme.com/jobs/000"
+        with patch("scrapers.ats_detector.requests.head") as mock_head:
+            result = resolve_ats(url, follow_redirects=False)
+        assert result is None
+        mock_head.assert_not_called()
+
+    def test_empty_url_returns_none(self):
+        assert resolve_ats("") is None

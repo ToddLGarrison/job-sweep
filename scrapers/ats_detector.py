@@ -2,6 +2,11 @@
 import re
 from urllib.parse import urlparse
 
+import requests
+
+# Cache keyed by original URL so each URL is resolved at most once per process run.
+_resolve_cache: dict[str, tuple[str, str] | None] = {}
+
 
 def extract_ats_domain(url: str) -> str:
     """Return the hostname from a URL (e.g. 'jobs.jobvite.com'), or '' if unparseable."""
@@ -79,3 +84,53 @@ def detect_ats(url: str) -> tuple[str, str] | None:
         return ("Comeet", f"{m.group(1)}/{m.group(2)}")
 
     return None
+
+
+def resolve_ats(url: str, follow_redirects: bool = True) -> tuple[str, str] | None:
+    """Like detect_ats, but follows HTTP redirects to handle custom career page URLs.
+
+    1. Tries detect_ats(url) first — returns immediately with no HTTP call on match.
+    2. Makes a HEAD request; if HEAD fails, falls back to GET.
+    3. Runs detect_ats on the final resolved URL.
+    4. Caches results so each original URL is fetched at most once.
+    """
+    if not url:
+        return None
+
+    if url in _resolve_cache:
+        return _resolve_cache[url]
+
+    # Direct match — no HTTP needed.
+    result = detect_ats(url)
+    if result is not None:
+        _resolve_cache[url] = result
+        return result
+
+    if not follow_redirects:
+        _resolve_cache[url] = None
+        return None
+
+    final_url: str | None = None
+
+    # HEAD first — lighter than GET.
+    try:
+        resp = requests.head(url, allow_redirects=True, timeout=10)
+        final_url = resp.url
+    except Exception:
+        pass  # HEAD rejected or timed out — try GET below.
+
+    # GET fallback when HEAD failed.
+    if final_url is None:
+        try:
+            resp = requests.get(url, allow_redirects=True, timeout=10)
+            final_url = resp.url
+        except Exception:
+            _resolve_cache[url] = None
+            return None
+
+    result = detect_ats(final_url)
+    if result is not None and final_url != url:
+        print(f"Resolved {url} → {final_url}")
+
+    _resolve_cache[url] = result
+    return result

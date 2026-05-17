@@ -15,7 +15,7 @@ from curl_cffi import requests
 from bs4 import BeautifulSoup
 
 from models import DiscoveryListing
-from scrapers.ats_detector import detect_ats, extract_ats_domain
+from scrapers.ats_detector import extract_ats_domain, resolve_ats
 
 _BASE_URL = "https://www.builtinboston.com"
 _SEARCH_URL = _BASE_URL + "/jobs?search={keyword}&remote=true"
@@ -46,7 +46,7 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
         if not apply_url:
             continue
 
-        detected = detect_ats(apply_url)
+        detected = resolve_ats(apply_url)
         if detected is None:
             domain = extract_ats_domain(apply_url)
             print(f"UNKNOWN ATS [BuiltInBoston] {company_name} | {title} | {domain}")

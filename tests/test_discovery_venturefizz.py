@@ -3,6 +3,7 @@ import json
 
 import pytest
 
+from scrapers.ats_detector import _resolve_cache
 from scrapers.discovery_venturefizz import (
     fetch_listings,
     _parse_listing_page,
@@ -11,6 +12,20 @@ from scrapers.discovery_venturefizz import (
     _extract_apply_url,
 )
 from bs4 import BeautifulSoup
+
+
+@pytest.fixture(autouse=True)
+def clear_ats_cache():
+    _resolve_cache.clear()
+    yield
+    _resolve_cache.clear()
+
+
+def _head_returns_same_url(url, **kwargs):
+    """HEAD mock that resolves to the same URL — simulates no redirect."""
+    resp = MagicMock()
+    resp.url = url
+    return resp
 
 
 def _make_listing_html(jobs: list[dict]) -> str:
@@ -174,7 +189,8 @@ class TestFetchListings:
             apply_url="https://internal.snyk.io/apply/123",
         )
         with patch("scrapers.discovery_venturefizz.requests.get") as mock_get, \
-             patch("scrapers.discovery_venturefizz.time.sleep"):
+             patch("scrapers.discovery_venturefizz.time.sleep"), \
+             patch("scrapers.ats_detector.requests.head", side_effect=_head_returns_same_url):
             mock_get.side_effect = self._mock_responses(listing, [detail])
             results, unknown_ats = fetch_listings("Solutions Engineer")
         assert results == []
