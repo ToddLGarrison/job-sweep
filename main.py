@@ -4,6 +4,7 @@ import importlib
 
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
+from scorer import batch_score_unscored
 from deduplicator import is_duplicate
 from digest import (
     build_digest,
@@ -26,6 +27,7 @@ def main() -> None:
     parser.add_argument("--dry-run", action="store_true", help="Print what would be written without making Notion changes")
     parser.add_argument("--skip-expiry", action="store_true", help="Skip the URL expiry check")
     parser.add_argument("--send-digest", action="store_true", help="Build and send the daily email digest (6am run only)")
+    parser.add_argument("--score", action="store_true", help="Score unscored opportunities via Claude API after sweep")
     args = parser.parse_args()
 
     today = datetime.date.today()
@@ -205,6 +207,15 @@ def main() -> None:
             print("\nDISCOVERY — ERRORS:")
             for source, msg in disc.errors:
                 print(f"  - {source}: {msg}")
+
+    # --- Fit scoring ---
+    if args.score:
+        print("\n--- Fit Scoring ---")
+        score_stats = batch_score_unscored(dry_run=args.dry_run)
+        print(f"Scored: {score_stats['scored']} opportunities")
+        print(f"Skipped: {score_stats['skipped']}")
+        if score_stats["errors"]:
+            print(f"Errors: {score_stats['errors']}")
 
     # --- Persist stats and send digest ---
     all_errors: list[list[str]] = [[c, m] for c, m in error_list]

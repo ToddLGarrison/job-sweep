@@ -178,6 +178,46 @@ def fetch_pipeline_snapshot() -> dict[str, int]:
     return counts
 
 
+def fetch_unscored_opportunities() -> list[dict]:
+    """Fetch active opportunities where Fit Score is empty."""
+    stages = ["Qualification", "Prioritized", "Create Resume", "Contacted / Applied"]
+    stage_clauses = [{"property": "Stage", "select": {"equals": s}} for s in stages]
+    opps = []
+    cursor = None
+    while True:
+        kwargs: dict = {
+            "filter": {
+                "and": [
+                    {"or": stage_clauses},
+                    {"property": "Fit Score", "select": {"is_empty": True}},
+                ]
+            }
+        }
+        if cursor:
+            kwargs["start_cursor"] = cursor
+        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        for page in resp["results"]:
+            props = page["properties"]
+            opps.append({
+                "page_id": page["id"],
+                "name": _get_title(props.get("Name", {})),
+                "job_url": props.get("Job URL", {}).get("url", "") or "",
+                "stage": _get_select(props.get("Stage", {})),
+                "fit_score": _get_select(props.get("Fit Score", {})),
+            })
+        if not resp.get("has_more"):
+            break
+        cursor = resp["next_cursor"]
+    return opps
+
+
+def update_fit_score(page_id: str, score: str) -> None:
+    """Write the Fit Score select field on an opportunity page."""
+    _client.pages.update(page_id=page_id, properties={
+        "Fit Score": {"select": {"name": score}},
+    })
+
+
 def update_opportunity_expiry(
     page_id: str,
     consecutive_misses: int,
@@ -192,6 +232,57 @@ def update_opportunity_expiry(
         print(f"  [DRY RUN] Would update expiry {page_id}: {action}")
         return
     _client.pages.update(page_id=page_id, properties=properties)
+
+
+def search_opportunities_by_company(company_name: str) -> list[dict]:
+    """Case-insensitive search for active opportunities matching company_name."""
+    active_stages = [    "Qualification", "Prioritized", "Create Resume", "Contacted / Applied", "Follow-up", "Meeting Scheduled",]
+    stage_clauses = [{"property": "Stage", "select": {"equals": s}} for s in active_stages]
+    opps = []
+    cursor = None
+    while True:
+        kwargs: dict = {
+            "filter": {
+                "and": [
+                    {"or": stage_clauses},
+                    {"property": "Name", "title": {"contains": company_name}},
+                ]
+            }
+        }
+        if cursor:
+            kwargs["start_cursor"] = cursor
+        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        for page in resp["results"]:
+            props = page["properties"]
+            name = _get_title(props.get("Name", {}))
+            parts = name.split(" / ")
+            extracted_company = parts[0].strip() if parts else name
+            extracted_title = parts[1].strip() if len(parts) >= 2 else ""
+            if company_name.lower() not in extracted_company.lower():
+                continue
+            opps.append({
+                "page_id": page["id"],
+                "name": name,
+                "company_name": extracted_company,
+                "title": extracted_title,
+                "job_url": props.get("Job URL", {}).get("url", "") or "",
+                "stage": _get_select(props.get("Stage", {})),
+            })
+        if not resp.get("has_more"):
+            break
+        cursor = resp["next_cursor"]
+    return opps
+
+
+def update_research_field(page_id: str, brief: str) -> None:
+    """Write the brief to the Research rich_text field, truncated to 2000 chars."""
+    truncated = brief[:2000]
+    _client.pages.update(
+        page_id=page_id,
+        properties={
+            "Research": {"rich_text": [{"text": {"content": truncated}}]},
+        },
+    )
 
 
 def update_company(page_id: str, hiring: Optional[str], dry_run: bool = False) -> None:

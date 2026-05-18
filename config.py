@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 NOTION_API_KEY = os.environ["NOTION_API_KEY"]
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 
 COMPANIES_DB_ID = "266cf0ba-f470-8286-9694-07cb7a7d7d72"
 OPPORTUNITIES_DB_ID = "eebcf0ba-f470-83bd-8a01-07d8bc25988e"
