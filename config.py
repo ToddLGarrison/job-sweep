@@ -49,6 +49,7 @@ ATS_SCRAPER_MAP = {
     "Workday": "scrapers.workday",
     "Workable": "scrapers.workable",
     "iCIMS": "scrapers.icims",
+    "Rippling": "scrapers.rippling",
 }
 
 # --- Discovery ---
