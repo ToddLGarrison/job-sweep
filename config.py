@@ -47,6 +47,7 @@ ATS_SCRAPER_MAP = {
     "SmartRecruiters": "scrapers.smartrecruiters",
     "Comeet": "scrapers.comeet",
     "Workday": "scrapers.workday",
+    "Workable": "scrapers.workable",
 }
 
 # --- Discovery ---
