@@ -48,6 +48,7 @@ ATS_SCRAPER_MAP = {
     "Comeet": "scrapers.comeet",
     "Workday": "scrapers.workday",
     "Workable": "scrapers.workable",
+    "iCIMS": "scrapers.icims",
 }
 
 # --- Discovery ---
