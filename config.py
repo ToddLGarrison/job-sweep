@@ -51,6 +51,7 @@ ATS_SCRAPER_MAP = {
     "icims": "scrapers.icims",
     "Rippling": "scrapers.rippling",
     "Jobvite": "scrapers.jobvite",
+    "BambooHR": "scrapers.bamboohr",
 }
 
 # --- Discovery ---
