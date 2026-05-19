@@ -13,6 +13,7 @@ from config import (
     SECONDARY_JD_SCAN_ENABLED,
     TITLE_EXCLUDE,
     VENTUREFIZZ_ENABLED,
+    YC_ENABLED,
 )
 from deduplicator import is_duplicate
 from models import Company, DiscoveryListing, JobListing, Opportunity
@@ -49,6 +50,8 @@ def run_discovery(dry_run: bool = False) -> DiscoveryStats:
         _run_builtinboston_discovery(stats, seen_urls, today, dry_run)
     if VENTUREFIZZ_ENABLED:
         _run_venturefizz_discovery(stats, seen_urls, today, dry_run)
+    if YC_ENABLED:
+        _run_yc_discovery(stats, seen_urls, today, dry_run)
 
     return stats
 
@@ -128,6 +131,23 @@ def _run_venturefizz_discovery(
             stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))
             continue
         _process_listings(listings, stats, seen_urls, today, dry_run)
+
+
+def _run_yc_discovery(
+    stats: DiscoveryStats,
+    seen_urls: set[str],
+    today: datetime.date,
+    dry_run: bool,
+) -> None:
+    from scrapers.discovery_yc import fetch_listings
+
+    try:
+        listings, gf = fetch_listings()
+        stats.geo_filtered += gf
+    except Exception as e:
+        stats.errors.append(("YC WaaS discovery", str(e)))
+        return
+    _process_listings(listings, stats, seen_urls, today, dry_run)
 
 
 def _process_listings(
