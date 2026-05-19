@@ -45,11 +45,12 @@ ATS_SCRAPER_MAP = {
     "Lever": "scrapers.lever",
     "Ashby": "scrapers.ashby",
     "SmartRecruiters": "scrapers.smartrecruiters",
-    "Comeet": "scrapers.comeet",
+    "comeet": "scrapers.comeet",
     "Workday": "scrapers.workday",
     "Workable": "scrapers.workable",
-    "iCIMS": "scrapers.icims",
+    "icims": "scrapers.icims",
     "Rippling": "scrapers.rippling",
+    "Jobvite": "scrapers.jobvite",
 }
 
 # --- Discovery ---
