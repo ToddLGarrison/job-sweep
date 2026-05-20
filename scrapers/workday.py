@@ -20,6 +20,9 @@ _WD_CODE_LAST_RE = re.compile(r"^.+,\s*([A-Z]{3})$")
 
 
 def fetch_jobs(slug: str) -> tuple[list[JobListing], int]:
+    if "/" not in slug:
+        print(f"ERROR [Workday/{slug}]: malformed slug — expected 'tenant.wdN/BoardName'")
+        return [], 0
     subdomain, board = slug.split("/", 1)
     # tenant in the API path is the subdomain without the .wd{N} version suffix
     tenant = subdomain.split(".")[0]

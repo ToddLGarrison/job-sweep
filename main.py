@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import importlib
+import time
 
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
@@ -20,6 +21,13 @@ from geo_filter import check_description_geo, is_title_geo_excluded
 from matcher import get_role_type, match_title
 from models import Opportunity
 from red_flag_detector import check_red_flags
+
+
+def _safe_update_company(company, hiring, dry_run: bool) -> None:
+    try:
+        notion.update_company(company.page_id, hiring, dry_run=dry_run)
+    except Exception as e:
+        print(f"WARNING: Could not update company '{company.name}' in Notion: {e}")
 
 
 def main() -> None:
@@ -54,7 +62,7 @@ def main() -> None:
         if company.ats not in ATS_SCRAPER_MAP:
             error_list.append((company.name, f"Unknown ATS: {company.ats}"))
             error_count += 1
-            notion.update_company(company.page_id, None, dry_run=args.dry_run)
+            _safe_update_company(company, None, args.dry_run)
             continue
 
         try:
@@ -64,7 +72,7 @@ def main() -> None:
         except Exception as e:
             error_list.append((company.name, str(e)))
             error_count += 1
-            notion.update_company(company.page_id, None, dry_run=args.dry_run)
+            _safe_update_company(company, None, args.dry_run)
             continue
 
         found_match = False
@@ -126,13 +134,14 @@ def main() -> None:
         except Exception as e:
             error_list.append((company.name, str(e)))
             error_count += 1
-            notion.update_company(company.page_id, None, dry_run=args.dry_run)
+            _safe_update_company(company, None, args.dry_run)
             continue
 
         hiring = "Relevant" if found_match else "Not"
         if not found_match:
             no_match += 1
-        notion.update_company(company.page_id, hiring, dry_run=args.dry_run)
+        _safe_update_company(company, hiring, args.dry_run)
+        time.sleep(0.3)
 
     # --- Discovery ---
     disc = run_discovery(dry_run=args.dry_run) if DISCOVERY_ENABLED else None

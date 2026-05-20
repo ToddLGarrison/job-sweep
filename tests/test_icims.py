@@ -135,3 +135,12 @@ class TestFetchJobs:
             results, geo = fetch_jobs("acme")
         assert len(results) == 1
         assert geo == 0
+
+    def test_slug_with_careers_prefix_is_normalized(self):
+        from scrapers.icims import fetch_jobs
+        html = _make_page_html([_make_job_item()])
+        with patch("scrapers.icims.requests.get", return_value=_mock_response(html)) as mock_get:
+            fetch_jobs("careers-acme")
+        called_url = mock_get.call_args[0][0]
+        assert "careers-careers-acme" not in called_url
+        assert "careers-acme.icims.com" in called_url

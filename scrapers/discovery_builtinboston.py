@@ -27,6 +27,15 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, impersonate=_IMPERSONATE, timeout=20)
+    except Exception as e:
+        print(f"ERROR [BuiltInBoston] GET {url}: {e}")
+        return [], 0
+
+    if resp.status_code == 403:
+        print(f"ERROR [BuiltInBoston] listing page blocked (403) for keyword '{keyword}' — skipping")
+        return [], 0
+
+    try:
         resp.raise_for_status()
     except Exception as e:
         print(f"ERROR [BuiltInBoston] GET {url}: {e}")
@@ -37,8 +46,8 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
     unknown_ats = 0
     for company_name, title, detail_url in cards:
         try:
-            time.sleep(_REQUEST_DELAY)
             apply_url = _fetch_apply_url(detail_url)
+            time.sleep(_REQUEST_DELAY)  # polite delay only after a successful fetch
         except Exception as e:
             print(f"ERROR [BuiltInBoston] detail {detail_url}: {e}")
             continue

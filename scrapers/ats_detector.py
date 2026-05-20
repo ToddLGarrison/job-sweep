@@ -29,6 +29,7 @@ def detect_ats(url: str) -> tuple[str, str] | None:
       Workday:         {tenant}.wd{N}.myworkdayjobs.com/[en-XX/]{board}/job/...
       SmartRecruiters: jobs.smartrecruiters.com/{Slug}/...
       Comeet:          www.comeet.com/jobs/{slug}/{token}/...
+      YC:              workatastartup.com/* or account.ycombinator.com/*
     """
     if not url:
         return None
@@ -82,6 +83,13 @@ def detect_ats(url: str) -> tuple[str, str] | None:
     )
     if m:
         return ("Comeet", f"{m.group(1)}/{m.group(2)}")
+
+    # YC Work at a Startup — apply URLs route through YC auth or directly to WaaS
+    if re.search(r"https?://(?:www\.workatastartup\.com|account\.ycombinator\.com)/", url):
+        # Try to extract company slug from workatastartup.com/companies/{slug}
+        m = re.search(r"workatastartup\.com/companies/([^/?#]+)", url)
+        slug = m.group(1) if m else ""
+        return ("YC", slug)
 
     return None
 

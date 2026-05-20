@@ -12,6 +12,10 @@ _HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Apple
 
 
 def fetch_jobs(slug: str) -> tuple[list[JobListing], int]:
+    # Notion slugs may be stored with a "careers-" prefix already (e.g. "careers-acme"),
+    # which would double the prefix the URL template already adds.
+    slug = slug.removeprefix("careers-")
+
     results = []
     geo_filtered = 0
     offset = 0

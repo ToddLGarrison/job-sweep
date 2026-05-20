@@ -2,6 +2,7 @@ import datetime
 from typing import Optional
 
 from notion_client import Client
+from notion_client.errors import APIResponseError
 
 from config import COMPANIES_DB_ID, NOTION_API_KEY, OPPORTUNITIES_DB_ID
 from models import Company, Opportunity
@@ -231,7 +232,11 @@ def update_opportunity_expiry(
         action = f"close + misses={consecutive_misses}" if stage else f"misses={consecutive_misses}"
         print(f"  [DRY RUN] Would update expiry {page_id}: {action}")
         return
-    _client.pages.update(page_id=page_id, properties=properties)
+    try:
+        _client.pages.update(page_id=page_id, properties=properties)
+    except APIResponseError as e:
+        print(f"WARNING [update_opportunity_expiry] page={page_id}: {e}")
+        raise
 
 
 def search_opportunities_by_company(company_name: str) -> list[dict]:
