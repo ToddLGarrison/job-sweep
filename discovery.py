@@ -123,9 +123,10 @@ def _run_venturefizz_discovery(
 ) -> None:
     from scrapers.discovery_venturefizz import fetch_listings
 
+    seen_detail_urls: set[str] = set()
     for keyword in DISCOVERY_TITLES:
         try:
-            listings, unk = fetch_listings(keyword)
+            listings, unk = fetch_listings(keyword, seen_detail_urls=seen_detail_urls)
             stats.unknown_ats += unk
         except Exception as e:
             stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))

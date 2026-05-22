@@ -27,7 +27,10 @@ _HEADERS = {
 _REQUEST_DELAY = 0.5  # seconds between detail page fetches
 
 
-def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
+def fetch_listings(
+    keyword: str,
+    seen_detail_urls: set[str] | None = None,
+) -> tuple[list[DiscoveryListing], int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, headers=_HEADERS, timeout=20)
@@ -40,6 +43,10 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
     results = []
     unknown_ats = 0
     for title, detail_url in job_cards:
+        if seen_detail_urls is not None:
+            if detail_url in seen_detail_urls:
+                continue
+            seen_detail_urls.add(detail_url)
         try:
             time.sleep(_REQUEST_DELAY)
             company_name, apply_url = _fetch_detail(detail_url)

@@ -7,7 +7,7 @@ from notion_client.errors import APIResponseError
 from config import COMPANIES_DB_ID, NOTION_API_KEY, OPPORTUNITIES_DB_ID
 from models import Company, Opportunity
 
-_client = Client(auth=NOTION_API_KEY, timeout_ms=120_000)
+_client = Client(auth=NOTION_API_KEY, timeout_ms=15_000)
 
 
 def fetch_companies() -> list[Company]:
