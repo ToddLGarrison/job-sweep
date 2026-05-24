@@ -5,6 +5,7 @@ import time
 
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, COMPANY_BLOCKLIST, DISCOVERY_ENABLED
+from notion_client.errors import RequestTimeoutError
 from scorer import batch_score_unscored
 from deduplicator import is_duplicate
 from digest import (
@@ -161,7 +162,10 @@ def main() -> None:
     # --- Expiry check ---
     expiry = None
     if not args.skip_expiry:
-        expiry = run_expiry_check(dry_run=args.dry_run)
+        try:
+            expiry = run_expiry_check(dry_run=args.dry_run)
+        except RequestTimeoutError as e:
+            print(f"WARNING: Expiry check timed out, skipping for this run: {e}")
 
     # --- Run summary ---
     print(f"\n=== Job Sweep Complete — {today.isoformat()} ===")
