@@ -5,6 +5,7 @@ from typing import Optional
 import notion_api as notion
 from config import (
     BUILTINBOSTON_ENABLED,
+    COMPANY_BLOCKLIST,
     DISCOVERY_ENABLED,
     DISCOVERY_JD_KEYWORDS,
     DISCOVERY_ROLE_TYPE_MAP,
@@ -164,6 +165,10 @@ def _process_listings(
 
         matched_title, match_type, matched_kws = _classify(listing)
         if match_type is None:
+            continue
+
+        if listing.company_name in COMPANY_BLOCKLIST:
+            print(f"SKIP {listing.company_name} / {listing.title} — blocklisted aggregator")
             continue
 
         if is_title_geo_excluded(listing.title) or \

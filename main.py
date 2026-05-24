@@ -4,7 +4,7 @@ import importlib
 import time
 
 import notion_api as notion
-from config import ATS_SCRAPER_MAP, DISCOVERY_ENABLED
+from config import ATS_SCRAPER_MAP, COMPANY_BLOCKLIST, DISCOVERY_ENABLED
 from scorer import batch_score_unscored
 from deduplicator import is_duplicate
 from digest import (
@@ -54,7 +54,15 @@ def main() -> None:
     error_list: list[tuple[str, str]] = []
     seen_urls: set[str] = set()
 
-    companies = notion.fetch_companies()
+    for _attempt in range(3):
+        try:
+            companies = notion.fetch_companies()
+            break
+        except Exception as e:
+            if _attempt == 2:
+                raise
+            print(f"Notion connection failed (attempt {_attempt + 1}/3), retrying in 15s: {e}")
+            time.sleep(15)
 
     for company in companies:
         swept += 1
@@ -84,6 +92,10 @@ def main() -> None:
 
                 matched = match_title(listing.title)
                 if not matched:
+                    continue
+
+                if company.name in COMPANY_BLOCKLIST:
+                    print(f"SKIP {company.name} / {listing.title} — blocklisted aggregator")
                     continue
 
                 if is_title_geo_excluded(listing.title) or \

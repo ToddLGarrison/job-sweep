@@ -87,6 +87,10 @@ TITLE_EXCLUDE = [
     "Head of",
 ]
 
+COMPANY_BLOCKLIST: set[str] = {
+    "Jobgether",    # job aggregator — roles not owned by this company
+}
+
 ATS_SCRAPER_MAP = {
     "Greenhouse": "scrapers.greenhouse",
     "Lever": "scrapers.lever",
