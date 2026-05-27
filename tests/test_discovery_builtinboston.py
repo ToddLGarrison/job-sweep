@@ -135,7 +135,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_builtinboston.requests.get") as mock_get, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results, _ = fetch_listings("Solutions Engineer")
+            results, _, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 1
         assert results[0].title == "Solutions Engineer"
         assert results[0].company_name == "Snyk"
@@ -155,7 +155,7 @@ class TestFetchListings:
              patch("scrapers.discovery_builtinboston.time.sleep"), \
              patch("scrapers.ats_detector.requests.head", side_effect=_head_returns_same_url):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results, unknown_ats = fetch_listings("Solutions Engineer")
+            results, unknown_ats, _ = fetch_listings("Solutions Engineer")
         assert results == []
         assert unknown_ats == 1
         assert "UNKNOWN ATS [BuiltInBoston]" in capsys.readouterr().out
@@ -168,13 +168,13 @@ class TestFetchListings:
         with patch("scrapers.discovery_builtinboston.requests.get") as mock_get, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results, _ = fetch_listings("Solutions Engineer")
+            results, _, _ = fetch_listings("Solutions Engineer")
         assert results == []
 
     def test_listing_http_error_returns_empty(self):
         with patch("scrapers.discovery_builtinboston.requests.get") as mock_get:
             mock_get.side_effect = Exception("connection timeout")
-            results, _ = fetch_listings("Solutions Engineer")
+            results, _, _ = fetch_listings("Solutions Engineer")
         assert results == []
 
     def test_detail_http_error_skips_card(self):
@@ -208,7 +208,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_builtinboston.requests.get") as mock_get, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             mock_get.side_effect = side_effect
-            results, _ = fetch_listings("Solutions Engineer")
+            results, _, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 1
         assert results[0].company_name == "Beta"
 
@@ -223,7 +223,7 @@ class TestFetchListings:
         with patch("scrapers.discovery_builtinboston.requests.get") as mock_get, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             mock_get.side_effect = self._mock_responses(listing, [detail])
-            results, _ = fetch_listings("Solutions Engineer")
+            results, _, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 1
         assert results[0].ats == "Workday"
         assert results[0].slug == "snyk.wd103/External"
@@ -243,7 +243,7 @@ class TestFetchListings:
              patch("scrapers.discovery_builtinboston.time.sleep"), \
              patch("scrapers.ats_detector.requests.head", side_effect=_head_returns_same_url):
             mock_get.side_effect = self._mock_responses(listing, details)
-            results, unknown_ats = fetch_listings("Solutions Engineer")
+            results, unknown_ats, _ = fetch_listings("Solutions Engineer")
         assert len(results) == 2
         assert unknown_ats == 1
         assert {r.ats for r in results} == {"Workday", "Ashby"}

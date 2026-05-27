@@ -23,23 +23,23 @@ _IMPERSONATE = "chrome120"
 _REQUEST_DELAY = 1.0  # seconds between detail page fetches
 
 
-def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
+def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int, int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, impersonate=_IMPERSONATE, timeout=20)
     except Exception as e:
         print(f"ERROR [BuiltInBoston] GET {url}: {e}")
-        return [], 0
+        return [], 0, 0
 
     if resp.status_code == 403:
         print(f"ERROR [BuiltInBoston] listing page blocked (403) for keyword '{keyword}' — skipping")
-        return [], 0
+        return [], 0, 1
 
     try:
         resp.raise_for_status()
     except Exception as e:
         print(f"ERROR [BuiltInBoston] GET {url}: {e}")
-        return [], 0
+        return [], 0, 0
 
     cards = _parse_listing_page(resp.text)
     results = []
@@ -71,7 +71,7 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int]:
             slug=slug,
         ))
 
-    return results, unknown_ats
+    return results, unknown_ats, 0
 
 
 def _parse_listing_page(html: str) -> list[tuple[str, str, str]]:

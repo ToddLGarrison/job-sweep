@@ -22,6 +22,12 @@ from geo_filter import check_description_geo, is_title_geo_excluded
 from red_flag_detector import check_red_flags
 
 
+YC_NOTE = (
+    "Sourced via YC Work at a Startup. "
+    "Apply via the YC listing — ATS URL redirect may change."
+)
+
+
 @dataclass
 class DiscoveryStats:
     title_matches: int = 0
@@ -32,6 +38,7 @@ class DiscoveryStats:
     geo_filtered: int = 0
     red_flagged: int = 0
     unknown_ats: int = 0
+    blocked_keywords: int = 0
     new_roles: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 
@@ -44,9 +51,17 @@ def run_discovery(dry_run: bool = False) -> DiscoveryStats:
     seen_urls: set[str] = set()
     today = datetime.date.today()
 
+    try:
+        all_companies = notion.fetch_companies()
+    except Exception as e:
+        stats.errors.append(("Discovery", f"fetch_companies failed: {e}"))
+        all_companies = []
+
     _run_greenhouse_discovery(stats, seen_urls, today, dry_run)
-    _run_seed_discovery("Lever", stats, seen_urls, today, dry_run)
-    _run_seed_discovery("Ashby", stats, seen_urls, today, dry_run)
+    _run_seed_discovery("Lever", all_companies, stats, seen_urls, today, dry_run)
+    _run_seed_discovery("Ashby", all_companies, stats, seen_urls, today, dry_run)
+    _run_seed_discovery("SmartRecruiters", all_companies, stats, seen_urls, today, dry_run)
+    _run_seed_discovery("Workday", all_companies, stats, seen_urls, today, dry_run)
     if BUILTINBOSTON_ENABLED:
         _run_builtinboston_discovery(stats, seen_urls, today, dry_run)
     if VENTUREFIZZ_ENABLED:
@@ -77,25 +92,68 @@ def _run_greenhouse_discovery(
 
 def _run_seed_discovery(
     ats: str,
+    all_companies: list,
     stats: DiscoveryStats,
     seen_urls: set[str],
     today: datetime.date,
     dry_run: bool,
 ) -> None:
-    if ats == "Lever":
-        from scrapers.discovery_lever import fetch_all_jobs
-    else:
-        from scrapers.discovery_ashby import fetch_all_jobs
+    notion_companies = [c for c in all_companies if c.ats == ats]
+    seed_dicts = [c for c in DISCOVERY_SEED_COMPANIES if c["ats"] == ats]
 
-    seed_companies = [c for c in DISCOVERY_SEED_COMPANIES if c["ats"] == ats]
-    for company in seed_companies:
-        try:
-            listings, gf = fetch_all_jobs(company)
-            stats.geo_filtered += gf
-        except Exception as e:
-            stats.errors.append((company["name"], str(e)))
-            continue
-        _process_listings(listings, stats, seen_urls, today, dry_run)
+    if ats in ("Lever", "Ashby"):
+        if ats == "Lever":
+            from scrapers.discovery_lever import fetch_all_jobs
+        else:
+            from scrapers.discovery_ashby import fetch_all_jobs
+
+        for company in notion_companies:
+            company_dict = {"slug": company.ats_slug, "name": company.name, "ats": ats}
+            try:
+                listings, gf = fetch_all_jobs(company_dict)
+                stats.geo_filtered += gf
+            except Exception as e:
+                stats.errors.append((company.name, str(e)))
+                continue
+            _process_listings(listings, stats, seen_urls, today, dry_run)
+
+        for company_dict in seed_dicts:
+            try:
+                listings, gf = fetch_all_jobs(company_dict)
+                stats.geo_filtered += gf
+            except Exception as e:
+                stats.errors.append((company_dict["name"], str(e)))
+                continue
+            _process_listings(listings, stats, seen_urls, today, dry_run)
+
+    elif ats == "SmartRecruiters":
+        from scrapers import smartrecruiters as scraper
+
+        for company in notion_companies:
+            try:
+                job_listings, gf = scraper.fetch_jobs(company.ats_slug)
+                stats.geo_filtered += gf
+            except Exception as e:
+                stats.errors.append((company.name, str(e)))
+                continue
+            disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
+            _process_listings(disc_listings, stats, seen_urls, today, dry_run)
+
+    elif ats == "Workday":
+        from scrapers import workday as scraper
+
+        for company in notion_companies:
+            if "/" not in company.ats_slug:
+                print(f"SKIP [Workday/{company.ats_slug}] — malformed slug, missing '/'")
+                continue
+            try:
+                job_listings, gf = scraper.fetch_jobs(company.ats_slug)
+                stats.geo_filtered += gf
+            except Exception as e:
+                stats.errors.append((company.name, str(e)))
+                continue
+            disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
+            _process_listings(disc_listings, stats, seen_urls, today, dry_run)
 
 
 def _run_builtinboston_discovery(
@@ -108,8 +166,9 @@ def _run_builtinboston_discovery(
 
     for keyword in DISCOVERY_TITLES:
         try:
-            listings, unk = fetch_listings(keyword)
+            listings, unk, blocked = fetch_listings(keyword)
             stats.unknown_ats += unk
+            stats.blocked_keywords += blocked
         except Exception as e:
             stats.errors.append(("BuiltInBoston discovery", f'keyword "{keyword}": {e}'))
             continue
@@ -204,6 +263,8 @@ def _process_listings(
             if match_type == "jd_keyword"
             else None
         )
+        if listing.ats == "YC":
+            opp_description = f"{opp_description}\n\n{YC_NOTE}" if opp_description else YC_NOTE
 
         opp = Opportunity(
             company=company,
@@ -261,6 +322,10 @@ def _classify(
 
 def _resolve_company(listing: DiscoveryListing, dry_run: bool) -> tuple[Company, bool]:
     """Return (company, is_new). Creates a Notion company record if not found."""
+    if listing.ats == "Greenhouse":
+        existing = notion.find_company_by_slug(listing.ats, listing.slug)
+        if existing:
+            return existing, False
     existing = notion.find_company_by_name(listing.company_name)
     if existing:
         return existing, False
@@ -271,3 +336,15 @@ def _resolve_company(listing: DiscoveryListing, dry_run: bool) -> tuple[Company,
         dry_run=dry_run,
     )
     return company, True
+
+
+def _job_listing_to_discovery(job: "JobListing", company: "Company") -> DiscoveryListing:
+    return DiscoveryListing(
+        title=job.title,
+        url=job.url,
+        company_name=company.name,
+        ats=company.ats,
+        slug=company.ats_slug,
+        description=job.description,
+        location=job.location,
+    )

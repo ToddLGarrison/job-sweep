@@ -40,6 +40,28 @@ def fetch_companies() -> list[Company]:
     return companies
 
 
+def find_company_by_slug(ats: str, slug: str) -> Optional[Company]:
+    resp = _client.data_sources.query(
+        COMPANIES_DB_ID,
+        filter={
+            "and": [
+                {"property": "ATS", "select": {"equals": ats}},
+                {"property": "ATS Slug", "rich_text": {"equals": slug}},
+            ]
+        },
+    )
+    for page in resp.get("results", []):
+        props = page["properties"]
+        return Company(
+            page_id=page["id"],
+            name=_get_title(props.get("Name", {})),
+            ats=_get_select(props.get("ATS", {})),
+            ats_slug=_get_text(props.get("ATS Slug", {})),
+            tier=_get_select(props.get("Tier", {})),
+        )
+    return None
+
+
 def find_company_by_name(name: str) -> Optional[Company]:
     resp = _client.data_sources.query(
         COMPANIES_DB_ID,
