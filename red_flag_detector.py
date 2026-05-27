@@ -80,6 +80,25 @@ _LEADERSHIP_REQ_PATTERNS = [
     r"\bexperience\s+managing\s+(a\s+)?team\b",
 ]
 
+_WRONG_DOMAIN_PATTERNS = [
+    r"\bclinical\s+trial[s]?\b",
+    r"\blife\s+sciences?\b",
+    r"\bpharmacovigilance\b",
+    r"\bregulatory\s+(affairs|submissions?|compliance)\b",
+    r"\belectronic\s+health\s+record[s]?\b",
+    r"\bEHR\b",
+    r"\bEMR\b",
+    r"\blong[\s-]term\s+care\b",
+    r"\bsenior\s+care\b",
+    r"\bnursing\s+(home|facilit)",
+    r"\bmedical\s+device[s]?\b",
+    r"\bclinical\s+data\s+management\b",
+    r"\bFDA\s+(submission|approval|compliance)\b",
+    r"\bGxP\b",
+    r"\bGMP\b",
+    r"\bGCP\b",
+]
+
 
 def _matches_any(text: str, patterns: list[str]) -> Optional[str]:
     for pat in patterns:
@@ -118,5 +137,9 @@ def check_red_flags(title: str, description: str) -> list[RedFlag]:
     hit = _matches_any(combined, _LEADERSHIP_REQ_PATTERNS)
     if hit:
         flags.append(RedFlag(code="LEADERSHIP_REQ", message=f"Management experience required: '{hit}'"))
+
+    hit = _matches_any(combined, _WRONG_DOMAIN_PATTERNS)
+    if hit:
+        flags.append(RedFlag(code="WRONG_DOMAIN", message=f"Wrong industry domain detected: '{hit}'"))
 
     return flags

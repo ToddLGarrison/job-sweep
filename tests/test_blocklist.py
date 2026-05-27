@@ -91,7 +91,8 @@ def _run_sweep(company_name: str) -> MagicMock:
              errors=0, closed_roles=[])), \
          patch("main.write_last_run"), \
          patch("main.read_and_clear_last_run", return_value=None), \
-         patch("main.time.sleep"):
+         patch("main.time.sleep"), \
+         patch("main._acquire_lock", return_value=MagicMock()):
         mock_scraper = MagicMock()
         mock_scraper.fetch_jobs.return_value = ([scraper_listing], 0)
         mock_import.return_value = mock_scraper

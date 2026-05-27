@@ -1,7 +1,20 @@
 import argparse
 import datetime
+import fcntl
 import importlib
 import time
+
+LOCKFILE = "/tmp/job_sweep.lock"
+
+
+def _acquire_lock():
+    lock = open(LOCKFILE, "w")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return lock
+    except OSError:
+        print("Sweep already running — exiting.")
+        raise SystemExit(0)
 
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, COMPANY_BLOCKLIST, DISCOVERY_ENABLED
@@ -32,6 +45,7 @@ def _safe_update_company(company, hiring, dry_run: bool) -> None:
 
 
 def main() -> None:
+    _lock = _acquire_lock()
     parser = argparse.ArgumentParser(description="Check ATS boards for matching roles and write to Notion.")
     parser.add_argument("--dry-run", action="store_true", help="Print what would be written without making Notion changes")
     parser.add_argument("--skip-expiry", action="store_true", help="Skip the URL expiry check")

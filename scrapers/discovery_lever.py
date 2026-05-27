@@ -29,7 +29,7 @@ def fetch_all_jobs(company: dict) -> tuple[list[DiscoveryListing], int]:
             company_name=company["name"],
             ats="Lever",
             slug=slug,
-            description=_build_description(job),
+            description=_build_description(job)[:1500],
             location=location,
         ))
     return results, geo_filtered

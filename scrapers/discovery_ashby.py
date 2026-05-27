@@ -28,6 +28,8 @@ def fetch_all_jobs(company: dict) -> tuple[list[DiscoveryListing], int]:
             or _strip_html(job.get("descriptionHtml", ""))
             or _strip_html(job.get("description", ""))
         )
+        if description:
+            description = description[:1500]
         results.append(DiscoveryListing(
             title=title,
             url=apply_url,

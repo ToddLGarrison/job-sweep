@@ -1,5 +1,6 @@
 import datetime
 from typing import Optional
+from urllib.parse import urlparse, urlunparse
 
 from notion_client import Client
 from notion_client.errors import APIResponseError
@@ -103,6 +104,12 @@ def create_company(
     return Company(page_id=resp["id"], name=name, ats=ats, ats_slug=slug)
 
 
+def _normalize_url(url: str) -> str:
+    """Strip query string and fragment, and remove trailing slash from path."""
+    parsed = urlparse(url)
+    return urlunparse((parsed.scheme, parsed.netloc, parsed.path.rstrip("/"), "", "", ""))
+
+
 def query_by_url(url: str) -> bool:
     resp = _client.data_sources.query(
         OPPORTUNITIES_DB_ID,
@@ -111,13 +118,23 @@ def query_by_url(url: str) -> bool:
     return len(resp["results"]) > 0
 
 
+_ACTIVE_STAGES = [
+    "Qualification", "Holding", "Prioritized", "Create Resume",
+    "Contacted / Applied", "Follow-up", "Meeting Scheduled",
+]
+
+
 def query_by_name(company_name: str, role_title: str) -> bool:
+    stage_clauses = [
+        {"property": "Stage", "select": {"equals": s}} for s in _ACTIVE_STAGES
+    ]
     resp = _client.data_sources.query(
         OPPORTUNITIES_DB_ID,
         filter={
             "and": [
                 {"property": "Name", "title": {"contains": company_name}},
                 {"property": "Name", "title": {"contains": role_title}},
+                {"or": stage_clauses},
             ]
         },
     )
@@ -131,7 +148,7 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
         "Name": {"title": [{"text": {"content": name}}]},
         "Stage": {"select": {"name": "Qualification"}},
         "Source": {"select": {"name": opp.source}},
-        "Job URL": {"url": opp.listing.url},
+        "Job URL": {"url": _normalize_url(opp.listing.url) if opp.listing.url else None},
         "Verified": {"checkbox": opp.verified == "__YES__"},
         "Company": {"relation": [{"id": opp.company.page_id}]},
         "Role Type": {"select": {"name": opp.role_type}},

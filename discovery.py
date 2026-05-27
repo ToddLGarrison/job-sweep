@@ -22,6 +22,23 @@ from geo_filter import check_description_geo, is_title_geo_excluded
 from red_flag_detector import check_red_flags
 
 
+# Pre-filter for the secondary JD scan only — not a red flag check.
+# Titles matching these strings are never relevant regardless of JD content.
+_WRONG_ROLE_TYPE_TITLES = [
+    "data engineer", "software engineer", "product manager", "program manager",
+    "ux designer", "ui designer", "product designer", "data scientist",
+    "data analyst", "business analyst", "marketing manager", "demand generation",
+    "devops", "site reliability", "security engineer", "infrastructure engineer",
+    "finance manager", "accounting", "recruiter", "talent acquisition",
+    "java engineer", "backend engineer", "frontend engineer", "full stack engineer",
+    "machine learning engineer", "ml engineer", "ai engineer",
+]
+
+def _is_wrong_role_type(title: str) -> bool:
+    lower = title.lower()
+    return any(wrong in lower for wrong in _WRONG_ROLE_TYPE_TITLES)
+
+
 YC_NOTE = (
     "Sourced via YC Work at a Startup. "
     "Apply via the YC listing — ATS URL redirect may change."
@@ -88,6 +105,7 @@ def _run_greenhouse_discovery(
             stats.errors.append(("Greenhouse discovery", f'keyword "{keyword}": {e}'))
             continue
         _process_listings(listings, stats, seen_urls, today, dry_run)
+        del listings
 
 
 def _run_seed_discovery(
@@ -116,6 +134,7 @@ def _run_seed_discovery(
                 stats.errors.append((company.name, str(e)))
                 continue
             _process_listings(listings, stats, seen_urls, today, dry_run)
+            del listings
 
         for company_dict in seed_dicts:
             try:
@@ -125,6 +144,7 @@ def _run_seed_discovery(
                 stats.errors.append((company_dict["name"], str(e)))
                 continue
             _process_listings(listings, stats, seen_urls, today, dry_run)
+            del listings
 
     elif ats == "SmartRecruiters":
         from scrapers import smartrecruiters as scraper
@@ -138,6 +158,7 @@ def _run_seed_discovery(
                 continue
             disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
             _process_listings(disc_listings, stats, seen_urls, today, dry_run)
+            del disc_listings
 
     elif ats == "Workday":
         from scrapers import workday as scraper
@@ -154,6 +175,7 @@ def _run_seed_discovery(
                 continue
             disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
             _process_listings(disc_listings, stats, seen_urls, today, dry_run)
+            del disc_listings
 
 
 def _run_builtinboston_discovery(
@@ -173,6 +195,7 @@ def _run_builtinboston_discovery(
             stats.errors.append(("BuiltInBoston discovery", f'keyword "{keyword}": {e}'))
             continue
         _process_listings(listings, stats, seen_urls, today, dry_run)
+        del listings
 
 
 def _run_venturefizz_discovery(
@@ -192,6 +215,7 @@ def _run_venturefizz_discovery(
             stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))
             continue
         _process_listings(listings, stats, seen_urls, today, dry_run)
+        del listings
 
 
 def _run_yc_discovery(
@@ -209,6 +233,7 @@ def _run_yc_discovery(
         stats.errors.append(("YC WaaS discovery", str(e)))
         return
     _process_listings(listings, stats, seen_urls, today, dry_run)
+    del listings
 
 
 def _process_listings(
@@ -312,6 +337,10 @@ def _classify(
                 return target, "title", [target]
 
     if SECONDARY_JD_SCAN_ENABLED and listing.description:
+        if excluded:
+            return None, None, []
+        if _is_wrong_role_type(listing.title):
+            return None, None, []
         lower_desc = listing.description.lower()
         matched_kws = [kw for kw in DISCOVERY_JD_KEYWORDS if kw.lower() in lower_desc]
         if len(matched_kws) >= 2:
