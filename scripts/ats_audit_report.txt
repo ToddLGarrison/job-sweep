@@ -1,0 +1,2427 @@
+ATS Audit Report — 2026-05-28
+==================================================
+
+Company: ADUSA (Ahold Delhaize USA)
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.adusa.com/careers/  [fetch timeout]
+Action needed: UPDATE ATS
+---
+Company: Airbnb
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Airbnb+jobs
+Action needed: UPDATE ATS
+---
+Company: Airlock Digital
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.airlockdigital.com
+Action needed: UPDATE ATS
+---
+Company: Akamai Technologies
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.akamai.com/careers  [HTTP 403]
+Action needed: UPDATE ATS
+---
+Company: Amper Technologies
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.amper.ai
+Action needed: UPDATE ATS
+---
+Company: athenahealth
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://jobs.athenahealth.com  [fetch error: ConnectionError]
+Action needed: UPDATE ATS
+---
+Company: Atlassian
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.atlassian.com/company/careers
+Action needed: UPDATE ATS
+---
+Company: BioRender
+Current ATS: Gem
+Current Slug: biorender
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.biorender.com/biorender-careers
+Action needed: UPDATE ATS
+---
+Company: Bitwarden
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://bitwarden.com/careers/
+Action needed: UPDATE ATS
+---
+Company: BuildBuddy
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=BuildBuddy+jobs
+Action needed: UPDATE ATS
+---
+Company: CarGurus
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://careers.cargurus.com
+Action needed: UPDATE ATS
+---
+Company: CATALIS
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://catalisgov.com/careers/
+Action needed: UPDATE ATS
+---
+Company: ChurnZero
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.churnzero.com
+Action needed: UPDATE ATS
+---
+Company: Clever
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: Lever
+Confidence: MEDIUM
+Careers URL: https://clever.com
+Action needed: UPDATE ATS
+---
+Company: Coforge
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Coforge+jobs
+Action needed: UPDATE ATS
+---
+Company: Cohley
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Cohley+jobs
+Action needed: UPDATE ATS
+---
+Company: CollegeVine
+Current ATS: BLANK
+Current Slug: collegevine.com
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://careers.collegevine.com/
+Action needed: UPDATE ATS
+---
+Company: Comcast (Universal Ads)
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: Workday
+Confidence: MEDIUM
+Careers URL: https://jobs.comcast.com
+Action needed: UPDATE ATS
+---
+Company: Connecteam
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Connecteam+jobs
+Action needed: UPDATE ATS
+---
+Company: ContinuumCloud
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=ContinuumCloud+jobs
+Action needed: UPDATE ATS
+---
+Company: Contractor Commerce
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Contractor+Commerce+jobs
+Action needed: UPDATE ATS
+---
+Company: Cornerstone OnDemand
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.cornerstoneondemand.com/company/careers
+Action needed: UPDATE ATS
+---
+Company: Domo
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.domo.com
+Action needed: UPDATE ATS
+---
+Company: Dynatrace
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: EAB
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://eab.com
+Action needed: UPDATE ATS
+---
+Company: Enroute
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Enroute+jobs
+Action needed: UPDATE ATS
+---
+Company: Estuary
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Estuary+jobs
+Action needed: UPDATE ATS
+---
+Company: Expel
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://expel.com/about/careers/#findrole
+Action needed: UPDATE ATS
+---
+Company: Fidelity Investments
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://jobs.fidelity.com
+Action needed: UPDATE ATS
+---
+Company: FieldStack
+Current ATS: Indeed
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.fieldstack.com/careers
+Action needed: UPDATE ATS
+---
+Company: FINN Partners
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=FINN+Partners+jobs
+Action needed: UPDATE ATS
+---
+Company: Harvard University
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://hr.harvard.edu/working-here  [HTTP 404]
+Action needed: UPDATE ATS
+---
+Company: Healthie
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.gethealthie.com
+Action needed: UPDATE ATS
+---
+Company: HubSpot
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.hubspot.com
+Action needed: UPDATE ATS
+---
+Company: Instacart
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Instacart+jobs
+Action needed: UPDATE ATS
+---
+Company: InterSystems
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.intersystems.com/careers  [fetch timeout]
+Action needed: UPDATE ATS
+---
+Company: Intezer
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Intezer+jobs
+Action needed: UPDATE ATS
+---
+Company: IXOPAY
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=IXOPAY+jobs
+Action needed: UPDATE ATS
+---
+Company: Kontent.ai
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Kontent.ai+jobs
+Action needed: UPDATE ATS
+---
+Company: Kyruus
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: Kyruus Health
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: Lever
+Confidence: MEDIUM
+Careers URL: https://kyruushealth.com/careers
+Action needed: UPDATE ATS
+---
+Company: Lakera
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://lakera.ai
+Action needed: UPDATE ATS
+---
+Company: LAZ Parking
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: LAZ Parking
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.lazparking.com/careers  [HTTP 403]
+Action needed: UPDATE ATS
+---
+Company: Liberty Mutual
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: icims
+Confidence: MEDIUM
+Careers URL: https://jobs.libertymutualgroup.com
+Action needed: UPDATE ATS
+---
+Company: limitless
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=limitless+jobs
+Action needed: UPDATE ATS
+---
+Company: Napster Corp.
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Napster+Corp.+jobs
+Action needed: UPDATE ATS
+---
+Company: Okta
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Okta+jobs
+Action needed: UPDATE ATS
+---
+Company: One Eighty Collective
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=One+Eighty+Collective+jobs
+Action needed: UPDATE ATS
+---
+Company: Orange Logic
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Orange+Logic+jobs
+Action needed: UPDATE ATS
+---
+Company: Oxbow Talent
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Oxbow+Talent+jobs
+Action needed: UPDATE ATS
+---
+Company: Parakeet 🦜
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Parakeet+🦜+jobs
+Action needed: UPDATE ATS
+---
+Company: PeopleReign
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=PeopleReign+jobs
+Action needed: UPDATE ATS
+---
+Company: Point & Pay
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Point+&+Pay+jobs
+Action needed: UPDATE ATS
+---
+Company: Progress
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: Propensity
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Propensity+jobs
+Action needed: UPDATE ATS
+---
+Company: QUANTUM
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=QUANTUM+jobs
+Action needed: UPDATE ATS
+---
+Company: RainFocus
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.rainfocus.com
+Action needed: UPDATE ATS
+---
+Company: Resonate AI
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.resonateapp.com/careers  [HTTP 404]
+Action needed: UPDATE ATS
+---
+Company: Retool
+Current ATS: Gem
+Current Slug: retool
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.retool.com
+Action needed: UPDATE ATS
+---
+Company: ReVision Energy
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.revisionenergy.com/solar-company/solar-careers-and-training/solar-jobs  [HTTP 404]
+Action needed: UPDATE ATS
+---
+Company: Rhombus Systems
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.rhombussystems.com
+Action needed: UPDATE ATS
+---
+Company: Riskonnect, Inc.
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Riskonnect,+Inc.+jobs
+Action needed: UPDATE ATS
+---
+Company: Riverbed Technology
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.riverbed.com
+Action needed: UPDATE ATS
+---
+Company: runZero
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=runZero+jobs
+Action needed: UPDATE ATS
+---
+Company: Salesforce
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.salesforce.com/company/careers
+Action needed: UPDATE ATS
+---
+Company: Salesken
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.salesken.ai
+Action needed: UPDATE ATS
+---
+Company: SimX
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=SimX+jobs
+Action needed: UPDATE ATS
+---
+Company: Smartbear
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: Snappt
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.snappt.com
+Action needed: UPDATE ATS
+---
+Company: Spot AI
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.spot.ai
+Action needed: UPDATE ATS
+---
+Company: Sumsub
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Sumsub+jobs
+Action needed: UPDATE ATS
+---
+Company: Takeda Pharmaceuticals
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: UPDATE ATS
+---
+Company: Teak
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.helloteak.com
+Action needed: UPDATE ATS
+---
+Company: Think Bullish
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Think+Bullish+jobs
+Action needed: UPDATE ATS
+---
+Company: Trueline
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://wearetrueline.com  [HTTP 403]
+Action needed: UPDATE ATS
+---
+Company: Tyler Technologies
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.tylertech.com/careers/job-listings
+Action needed: UPDATE ATS
+---
+Company: Unily
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.unily.com
+Action needed: UPDATE ATS
+---
+Company: Veeva Systems
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.veeva.com
+Action needed: UPDATE ATS
+---
+Company: VETRO FiberMap
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://vetrofibermap.com
+Action needed: UPDATE ATS
+---
+Company: VIA Science
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: Workable
+Confidence: MEDIUM
+Careers URL: https://www.viascience.com/careers
+Action needed: UPDATE ATS
+---
+Company: Voxel
+Current ATS: BLANK
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.voxelplatform.com  [fetch error: ConnectionError]
+Action needed: UPDATE ATS
+---
+Company: Zensai
+Current ATS: Recruitee
+Current Slug: zensai
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://zensai.com
+Action needed: UPDATE ATS
+---
+Company: Birdeye
+Current ATS: Greenhouse
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://birdeye.com
+Action needed: UPDATE SLUG
+---
+Company: Checkr
+Current ATS: Greenhouse
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://checkr.com
+Action needed: UPDATE SLUG
+---
+Company: DailyPay
+Current ATS: Greenhouse
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://dailypay.com
+Action needed: UPDATE SLUG
+---
+Company: DDN
+Current ATS: icims
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=DDN+jobs
+Action needed: UPDATE SLUG
+---
+Company: Dynatrace
+Current ATS: Greenhouse
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://dynatrace.com
+Action needed: UPDATE SLUG
+---
+Company: Fieldguide
+Current ATS: Ashby
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.fieldguide.io
+Action needed: UPDATE SLUG
+---
+Company: Front
+Current ATS: Ashby
+Current Slug: BLANK
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.front.com
+Action needed: UPDATE SLUG
+---
+Company: Popl
+Current ATS: Ashby
+Current Slug: popl
+Detected ATS: YC
+Confidence: HIGH
+Careers URL: https://www.workatastartup.com/jobs/76798
+Action needed: VERIFY
+---
+Company: 360Learning
+Current ATS: Lever
+Current Slug: 360learning
+Detected ATS: Lever
+Confidence: MEDIUM
+Careers URL: https://www.360learning.com
+Action needed: OK
+---
+Company: Absorb LMS
+Current ATS: Ashby
+Current Slug: absorblms
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.absorblms.com
+Action needed: OK
+---
+Company: acceldata
+Current ATS: Lever
+Current Slug: acceldata
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Accenture
+Current ATS: Workday
+Current Slug: accenture.wd103/AccentureCareers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.accenture.com/us-en/careers
+Action needed: OK
+---
+Company: AcuityMD
+Current ATS: Greenhouse
+Current Slug: acuitymd
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.acuitymd.com
+Action needed: OK
+---
+Company: Akeyless Security
+Current ATS: comeet
+Current Slug: akeyless/27.006
+Detected ATS: comeet
+Confidence: MEDIUM
+Careers URL: https://www.akeyless.io/careers/
+Action needed: OK
+---
+Company: Algolia
+Current ATS: Greenhouse
+Current Slug: algolia
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.algolia.com
+Action needed: OK
+---
+Company: Ambient.ai
+Current ATS: Ashby
+Current Slug: ambient.ai
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: AMPECO
+Current ATS: Lever
+Current Slug: ampeco-global
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Amplitude
+Current ATS: Greenhouse
+Current Slug: amplitude
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.amplitude.com
+Action needed: OK
+---
+Company: Apollo.io
+Current ATS: Greenhouse
+Current Slug: apolloio
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Arcadia
+Current ATS: Greenhouse
+Current Slug: arcadiacareers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.arcadia.io  [HTTP 404]
+Action needed: OK
+---
+Company: Ashby
+Current ATS: Ashby
+Current Slug: ashby
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://www.ashbyhq.com
+Action needed: OK
+---
+Company: Atlan
+Current ATS: Ashby
+Current Slug: atlan
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Atomic Financial
+Current ATS: Ashby
+Current Slug: atomic-financial
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Attio
+Current ATS: Ashby
+Current Slug: attio
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://attio.com
+Action needed: OK
+---
+Company: Autodesk
+Current ATS: Workday
+Current Slug: autodesk.wd1/Ext
+Detected ATS: Workday
+Confidence: MEDIUM
+Careers URL: https://www.autodesk.com/careers.%F0%9F%91%8F
+Action needed: OK
+---
+Company: Automattic
+Current ATS: Greenhouse
+Current Slug: automatticcareers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: AutoStore
+Current ATS: Workday
+Current Slug: autostore.wd3/autostore
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Bask Health
+Current ATS: Workable
+Current Slug: bask-health-1
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://jobs.bask.health/
+Action needed: OK
+---
+Company: Bearing
+Current ATS: Greenhouse
+Current Slug: bearing
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://job-boards.greenhouse.io/bearing
+Action needed: OK
+---
+Company: Benchling
+Current ATS: Ashby
+Current Slug: benchling
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: BeyondTrust
+Current ATS: Greenhouse
+Current Slug: beyondtrust
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://job-boards.greenhouse.io/beyondtrust?error=true
+Action needed: OK
+---
+Company: Black Duck
+Current ATS: Greenhouse
+Current Slug: blackduck
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Block
+Current ATS: Greenhouse
+Current Slug: block.xyz
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://block.xyz/careers/jobs
+Action needed: OK
+---
+Company: BloomNation
+Current ATS: Lever
+Current Slug: promenade
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.bloomnation.com/join/careers/?srsltid=AfmBOoopGtGzT7zOMT6rTXOD0irtlezGytPaw-XWdOSl5NovnRTKJCeA
+Action needed: OK
+---
+Company: Blueprint Medicines
+Current ATS: Greenhouse
+Current Slug: blueprintmedicines
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.blueprintmedicines.com/careers
+Action needed: OK
+---
+Company: Bonterra
+Current ATS: Workday
+Current Slug: bonterra.wd1/bonterratech
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://bonterratech.com
+Action needed: OK
+---
+Company: Braze
+Current ATS: Greenhouse
+Current Slug: braze
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.braze.com
+Action needed: OK
+---
+Company: Bretton AI
+Current ATS: Ashby
+Current Slug: brettonai
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://jobs.ashbyhq.com/brettonai
+Action needed: OK
+---
+Company: Brown & Brown Insurance
+Current ATS: Workday
+Current Slug: bbinsurance.wd1/Careers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Buildkite
+Current ATS: Greenhouse
+Current Slug: buildkite
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://buildkite.com
+Action needed: OK
+---
+Company: Canopy Connect
+Current ATS: Greenhouse
+Current Slug: canopyconnect
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://canopyconnect.com  [fetch timeout]
+Action needed: OK
+---
+Company: Catalyst Software
+Current ATS: Rippling
+Current Slug: totango
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.catalyst.io
+Action needed: OK
+---
+Company: Cengage Group
+Current ATS: Workday
+Current Slug: cengage.wd5/CengageNorthAmericaCareers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Chainguard
+Current ATS: Greenhouse
+Current Slug: chainguard
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Checkly
+Current ATS: Ashby
+Current Slug: checkly
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Chromatic
+Current ATS: Ashby
+Current Slug: Chromatic
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: CivicPlus
+Current ATS: Jobvite
+Current Slug: civicplus
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=CivicPlus+jobs
+Action needed: OK
+---
+Company: Civitas Learning
+Current ATS: Greenhouse
+Current Slug: civitaslearning
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://civitaslearning.com
+Action needed: OK
+---
+Company: Clay
+Current ATS: Ashby
+Current Slug: claylabs
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.clay.com
+Action needed: OK
+---
+Company: Cleo
+Current ATS: Greenhouse
+Current Slug: cleo
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Close.com
+Current ATS: Ashby
+Current Slug: Close
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://www.close.com/careers
+Action needed: OK
+---
+Company: CodeRabbit
+Current ATS: Ashby
+Current Slug: coderabbit
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://coderabbit.ai
+Action needed: OK
+---
+Company: CoderPad
+Current ATS: Lever
+Current Slug: coderpad
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Common Room
+Current ATS: Ashby
+Current Slug: commonroom
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.commonroom.io
+Action needed: OK
+---
+Company: Conga
+Current ATS: Greenhouse
+Current Slug: conga
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Contentful
+Current ATS: Greenhouse
+Current Slug: contentful
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.contentful.com
+Action needed: OK
+---
+Company: Contentsquare
+Current ATS: Lever
+Current Slug: contentsquare
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Conversica
+Current ATS: Lever
+Current Slug: conversica
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.conversica.com
+Action needed: OK
+---
+Company: Cresta
+Current ATS: Greenhouse
+Current Slug: cresta
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.cresta.com
+Action needed: OK
+---
+Company: CrowdStrike
+Current ATS: Workday
+Current Slug: crowdstrike.wd5/crowdstrikecareers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Cyera
+Current ATS: comeet
+Current Slug: cyera/17.008
+Detected ATS: comeet
+Confidence: MEDIUM
+Careers URL: https://www.cyera.io/careers
+Action needed: OK
+---
+Company: DataRobot
+Current ATS: Workday
+Current Slug: datarobot.wd1/DataRobot_External_Careers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Decagon
+Current ATS: Ashby
+Current Slug: decagon
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Decagon+jobs
+Action needed: OK
+---
+Company: Deel
+Current ATS: Ashby
+Current Slug: deel
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.deel.com
+Action needed: OK
+---
+Company: Deepgram
+Current ATS: Ashby
+Current Slug: Deepgram
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://deepgram.com/careers
+Action needed: OK
+---
+Company: Definitive Healthcare
+Current ATS: Greenhouse
+Current Slug: definitivehc
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.definitivehc.com
+Action needed: OK
+---
+Company: Dialpad
+Current ATS: Greenhouse
+Current Slug: dialpad
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.dialpad.com
+Action needed: OK
+---
+Company: DigitalGenius
+Current ATS: Workable
+Current Slug: digitalgenius
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=DigitalGenius+jobs
+Action needed: OK
+---
+Company: Docebo
+Current ATS: Ashby
+Current Slug: docebo
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.docebo.com
+Action needed: OK
+---
+Company: Drata
+Current ATS: Ashby
+Current Slug: drata
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Drift
+Current ATS: Greenhouse
+Current Slug: salesloft
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.drift.com
+Action needed: OK
+---
+Company: EasyLlama
+Current ATS: Ashby
+Current Slug: easyllama
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://jobs.ashbyhq.com/easyllama.com
+Action needed: OK
+---
+Company: Edia
+Current ATS: Ashby
+Current Slug: edia
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://jobs.ashbyhq.com/edia
+Action needed: OK
+---
+Company: Envoy
+Current ATS: Ashby
+Current Slug: envoy
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.envoy.com
+Action needed: OK
+---
+Company: Espresa
+Current ATS: Greenhouse
+Current Slug: espresa
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: EvenUp
+Current ATS: Ashby
+Current Slug: evenup
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://jobs.ashbyhq.com/evenup
+Action needed: OK
+---
+Company: fal
+Current ATS: Greenhouse
+Current Slug: fal
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Federal Reserve Bank of Boston
+Current ATS: Workday
+Current Slug: rb.wd5/FRS
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Fello
+Current ATS: Rippling
+Current Slug: fello-careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Fello+jobs
+Action needed: OK
+---
+Company: Files.com
+Current ATS: Greenhouse
+Current Slug: filescom
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.files.com
+Action needed: OK
+---
+Company: FireMon
+Current ATS: Lever
+Current Slug: firemon
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: First Advantage
+Current ATS: Workday
+Current Slug: firstadvantage.wd5/FirstAdvantage
+Detected ATS: Workday
+Confidence: MEDIUM
+Careers URL: https://fadv.com/careers/
+Action needed: OK
+---
+Company: Five9
+Current ATS: Greenhouse
+Current Slug: five9
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.five9.com/about/careers
+Action needed: OK
+---
+Company: Flock Safety
+Current ATS: Ashby
+Current Slug: flock
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.flocksafety.com
+Action needed: OK
+---
+Company: Flywire
+Current ATS: SmartRecruiters
+Current Slug: Flywire1
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Fortanix
+Current ATS: Workable
+Current Slug: fortanix
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Fortanix+jobs
+Action needed: OK
+---
+Company: Freshworks
+Current ATS: SmartRecruiters
+Current Slug: Freshworks
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.freshworks.com
+Action needed: OK
+---
+Company: G2i
+Current ATS: Ashby
+Current Slug: g2i
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Gainsight
+Current ATS: Workday
+Current Slug: gainsight.wd5/Gainsight_External_Careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.gainsight.com  [HTTP 403]
+Action needed: OK
+---
+Company: GBG Plc
+Current ATS: Workable
+Current Slug: gbg
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=GBG+Plc+jobs
+Action needed: OK
+---
+Company: Gecko Robotics
+Current ATS: Ashby
+Current Slug: gecko-robotics
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: GitLab
+Current ATS: Greenhouse
+Current Slug: gitlab
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://about.gitlab.com
+Action needed: OK
+---
+Company: Glean
+Current ATS: Greenhouse
+Current Slug: gleanwork
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Glean+jobs
+Action needed: OK
+---
+Company: GoGuardian
+Current ATS: Greenhouse
+Current Slug: goguardian
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=GoGuardian+jobs
+Action needed: OK
+---
+Company: Gong
+Current ATS: Greenhouse
+Current Slug: gongio
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.gong.io
+Action needed: OK
+---
+Company: Granicus
+Current ATS: icims
+Current Slug: careers-granicus
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://granicus.com
+Action needed: OK
+---
+Company: GrowthBook
+Current ATS: Workable
+Current Slug: growthbook
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=GrowthBook+jobs
+Action needed: OK
+---
+Company: Guidewheel
+Current ATS: Greenhouse
+Current Slug: guidewheel
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.guidewheel.com
+Action needed: OK
+---
+Company: Highspot
+Current ATS: Lever
+Current Slug: highspot
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.highspot.com/careers
+Action needed: OK
+---
+Company: Hightouch
+Current ATS: Greenhouse
+Current Slug: hightouch
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://hightouch.com
+Action needed: OK
+---
+Company: Hologram Inc.
+Current ATS: Greenhouse
+Current Slug: hologram
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Hologram+Inc.+jobs
+Action needed: OK
+---
+Company: IDEXX Laboratories
+Current ATS: Workday
+Current Slug: idexx
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.idexx.com/en/about-idexx/careers/  [HTTP 404]
+Action needed: OK
+---
+Company: Instructure
+Current ATS: Ashby
+Current Slug: instructure
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.instructure.com
+Action needed: OK
+---
+Company: Instructure (Canvas LMS)
+Current ATS: Ashby
+Current Slug: instructure
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.instructure.com
+Action needed: OK
+---
+Company: Intercom
+Current ATS: Greenhouse
+Current Slug: intercom
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.intercom.com
+Action needed: OK
+---
+Company: Iterable
+Current ATS: Greenhouse
+Current Slug: iterable
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.iterable.com
+Action needed: OK
+---
+Company: Jellyfish
+Current ATS: Ashby
+Current Slug: jellyfishcareers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://jellyfish.co/company/careers/
+Action needed: OK
+---
+Company: Jobgether
+Current ATS: Lever
+Current Slug: jobgether
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Jobgether+jobs
+Action needed: OK
+---
+Company: Jump - Advisor AI
+Current ATS: Ashby
+Current Slug: jump
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://careers.jumpapp.com/
+Action needed: OK
+---
+Company: Junction
+Current ATS: Ashby
+Current Slug: junction
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Keeper Security, Inc.
+Current ATS: Greenhouse
+Current Slug: keepersecurity
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://www.keepersecurity.com/jobs.html
+Action needed: OK
+---
+Company: Ketch
+Current ATS: Lever
+Current Slug: Ketch
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Klaviyo
+Current ATS: Greenhouse
+Current Slug: klaviyocampus
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://careers.klaviyo.com
+Action needed: OK
+---
+Company: Laserfiche
+Current ATS: Jobvite
+Current Slug: laserfiche
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.laserfiche.com
+Action needed: OK
+---
+Company: LaunchDarkly
+Current ATS: Greenhouse
+Current Slug: launchdarkly
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://launchdarkly.com
+Action needed: OK
+---
+Company: Laurel
+Current ATS: Ashby
+Current Slug: Laurel
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Litmos
+Current ATS: Greenhouse
+Current Slug: litmos
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.litmos.com/about/careers  [HTTP 404]
+Action needed: OK
+---
+Company: LogRocket
+Current ATS: Lever
+Current Slug: logrocket
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://logrocket.com
+Action needed: OK
+---
+Company: Logz.io
+Current ATS: Lever
+Current Slug: logz
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://logz.io
+Action needed: OK
+---
+Company: mabl
+Current ATS: Greenhouse
+Current Slug: mabl
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.mabl.com
+Action needed: OK
+---
+Company: Marsh McLennan
+Current ATS: Workday
+Current Slug: mmc.wd1/MMC
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Maven AGI
+Current ATS: Ashby
+Current Slug: maven-agi
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.mavenagi.com
+Action needed: OK
+---
+Company: Merlin Labs
+Current ATS: Lever
+Current Slug: merlinlabs
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://merlinlabs.com/careers/
+Action needed: OK
+---
+Company: Merlin Labs
+Current ATS: Lever
+Current Slug: merlinlabs
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.merlinlabs.com/careers
+Action needed: OK
+---
+Company: Mimecast
+Current ATS: Workday
+Current Slug: mimecast.wd5/Mimecast-Careers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Miter
+Current ATS: Ashby
+Current Slug: miter
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.miter.com/careers
+Action needed: OK
+---
+Company: Mixpanel
+Current ATS: Greenhouse
+Current Slug: mixpanel
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.mixpanel.com
+Action needed: OK
+---
+Company: Motive
+Current ATS: Greenhouse
+Current Slug: gomotive
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://gomotive.com
+Action needed: OK
+---
+Company: Nash
+Current ATS: Ashby
+Current Slug: Nash
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://buildnash.com/careers  [HTTP 404]
+Action needed: OK
+---
+Company: Navina
+Current ATS: comeet
+Current Slug: navina/E6.00C
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.navina.ai/careers
+Action needed: OK
+---
+Company: Netradyne
+Current ATS: SmartRecruiters
+Current Slug: Netradyne
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Netradyne+jobs
+Action needed: OK
+---
+Company: New Relic
+Current ATS: Greenhouse
+Current Slug: newrelic
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Nexthink
+Current ATS: SmartRecruiters
+Current Slug: nexthink
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://nexthink.com
+Action needed: OK
+---
+Company: NinjaOne
+Current ATS: Jobvite
+Current Slug: ninjaone
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://ninjaone.com
+Action needed: OK
+---
+Company: Notable Health
+Current ATS: Ashby
+Current Slug: notable
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.notablehealth.com
+Action needed: OK
+---
+Company: Notion
+Current ATS: Ashby
+Current Slug: notion
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.notion.so
+Action needed: OK
+---
+Company: Oden Technologies
+Current ATS: Ashby
+Current Slug: oden-technologies
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.nominal.io
+Action needed: OK
+---
+Company: Onit
+Current ATS: Lever
+Current Slug: onit
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.onit.com
+Action needed: OK
+---
+Company: OpenTrack
+Current ATS: Workable
+Current Slug: opentrack
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=OpenTrack+jobs
+Action needed: OK
+---
+Company: Oraion
+Current ATS: Workday
+Current Slug: orionadvisor.wd1/Orion_Careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Oraion+jobs
+Action needed: OK
+---
+Company: Order.co
+Current ATS: Rippling
+Current Slug: orderco
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.order.co
+Action needed: OK
+---
+Company: PandaDoc
+Current ATS: Greenhouse
+Current Slug: pandadoc
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.pandadoc.com
+Action needed: OK
+---
+Company: Paperless Parts
+Current ATS: Greenhouse
+Current Slug: paperlessparts
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.paperlessparts.com
+Action needed: OK
+---
+Company: Paragon
+Current ATS: Ashby
+Current Slug: Paragon
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.useparagon.com
+Action needed: OK
+---
+Company: Pave
+Current ATS: Greenhouse
+Current Slug: paveakatroveinformationtechnologies
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.pave.com
+Action needed: OK
+---
+Company: Pax8
+Current ATS: Workday
+Current Slug: pax8inc.wd12/Pax8Careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Pax8+jobs
+Action needed: OK
+---
+Company: Pendo
+Current ATS: Greenhouse
+Current Slug: pendo
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.pendo.io
+Action needed: OK
+---
+Company: Pigment
+Current ATS: Lever
+Current Slug: pigment
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Ping Identity
+Current ATS: Greenhouse
+Current Slug: pingidentity
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Pipl
+Current ATS: comeet
+Current Slug: pipl/22.008
+Detected ATS: Comeet
+Confidence: HIGH
+Careers URL: https://www.comeet.com/jobs/pipl/22.008/
+Action needed: OK
+---
+Company: Plaid
+Current ATS: Lever
+Current Slug: plaid
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://plaid.com/careers/
+Action needed: OK
+---
+Company: Pluralsight
+Current ATS: Workday
+Current Slug: pluralsight.wd1/Careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://pluralsight.com
+Action needed: OK
+---
+Company: PointClickCare
+Current ATS: Lever
+Current Slug: pointclickcare
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Postman
+Current ATS: Greenhouse
+Current Slug: postman
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://postman.com
+Action needed: OK
+---
+Company: PowerSchool
+Current ATS: icims
+Current Slug: careers-powerschool
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.powerschool.com
+Action needed: OK
+---
+Company: Procore Technologies
+Current ATS: Workday
+Current Slug: procore.wd12/Procore_External_Careers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.procore.com
+Action needed: OK
+---
+Company: Progress Software
+Current ATS: Jobvite
+Current Slug: progress
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.progress.com/company/careers
+Action needed: OK
+---
+Company: Prolific
+Current ATS: Greenhouse
+Current Slug: prolific
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://www.prolific.com/careers
+Action needed: OK
+---
+Company: Proton.ai
+Current ATS: Greenhouse
+Current Slug: protonai
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Qualified
+Current ATS: Ashby
+Current Slug: qualified
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.qualified.com
+Action needed: OK
+---
+Company: Quantum Metric
+Current ATS: Lever
+Current Slug: quantummetric
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.quantummetric.com
+Action needed: OK
+---
+Company: Rain
+Current ATS: Ashby
+Current Slug: rain
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Rain+jobs
+Action needed: OK
+---
+Company: RapidSOS
+Current ATS: Greenhouse
+Current Slug: rapidsos
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://rapidsos.com
+Action needed: OK
+---
+Company: Red Hat
+Current ATS: Workday
+Current Slug: redhat.wd5/Jobs
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Redox
+Current ATS: Lever
+Current Slug: redoxengine
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://redoxengine.com
+Action needed: OK
+---
+Company: Rippling
+Current ATS: Rippling
+Current Slug: rippling
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.rippling.com
+Action needed: OK
+---
+Company: Sagent
+Current ATS: Greenhouse
+Current Slug: sagent
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Sagent+jobs
+Action needed: OK
+---
+Company: SailPoint
+Current ATS: Workday
+Current Slug: sailpoint.wd1/SailPoint
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Samsara
+Current ATS: Greenhouse
+Current Slug: samsara
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.samsara.com
+Action needed: OK
+---
+Company: Sanofi
+Current ATS: Workday
+Current Slug: sanofi.wd3/SanofiCareers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Scandit
+Current ATS: Greenhouse
+Current Slug: scandit
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.scandit.com/careers
+Action needed: OK
+---
+Company: Schrödinger, Inc.
+Current ATS: Greenhouse
+Current Slug: schrdinger
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Scribe
+Current ATS: Ashby
+Current Slug: scribe
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://scribehow.com
+Action needed: OK
+---
+Company: Seismic
+Current ATS: icims
+Current Slug: careers-seismic
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://seismic.com
+Action needed: OK
+---
+Company: Semrush
+Current ATS: Workday
+Current Slug: semrush.wd5/semrushcareers
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.semrush.com
+Action needed: OK
+---
+Company: ServiceTitan
+Current ATS: Workday
+Current Slug: servicetitan.wd1/ServiceTitan
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Sifflet
+Current ATS: Ashby
+Current Slug: sifflet
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Sifflet+jobs
+Action needed: OK
+---
+Company: Simbe Robotics
+Current ATS: Lever
+Current Slug: SimbeRobotics
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.simberobotics.com
+Action needed: OK
+---
+Company: Singular
+Current ATS: Ashby
+Current Slug: singular
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Sixfold
+Current ATS: Greenhouse
+Current Slug: sixfold
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.sixfold.com
+Action needed: OK
+---
+Company: Smartleaf
+Current ATS: Ashby
+Current Slug: smartleaf
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.smartleaf.com/careers
+Action needed: OK
+---
+Company: Snyk
+Current ATS: Workday
+Current Slug: snyk.wd103/external
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://snyk.io/careers/
+Action needed: OK
+---
+Company: Softdocs
+Current ATS: Lever
+Current Slug: softdocs
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.softdocs.com
+Action needed: OK
+---
+Company: SORACOM
+Current ATS: Workable
+Current Slug: soracom
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=SORACOM+jobs
+Action needed: OK
+---
+Company: Spindrift
+Current ATS: Workable
+Current Slug: spindrift
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.spindriftdrink.com/pages/jobs  [fetch error: ConnectionError]
+Action needed: OK
+---
+Company: Spring Health
+Current ATS: Greenhouse
+Current Slug: springhealth66
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Spring+Health+jobs
+Action needed: OK
+---
+Company: Sprinto
+Current ATS: Lever
+Current Slug: Sprinto
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Sprinto+jobs
+Action needed: OK
+---
+Company: StarRez
+Current ATS: Greenhouse
+Current Slug: starrez
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.starrez.com
+Action needed: OK
+---
+Company: State Street
+Current ATS: Workday
+Current Slug: statestreet.wd1/eQuest
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Stripe
+Current ATS: Greenhouse
+Current Slug: stripe
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://stripe.com
+Action needed: OK
+---
+Company: Superhuman
+Current ATS: Ashby
+Current Slug: superhuman
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://superhuman.com
+Action needed: OK
+---
+Company: SwiftConnect
+Current ATS: Lever
+Current Slug: swiftconnect
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://swiftconnect.io
+Action needed: OK
+---
+Company: Tailscale
+Current ATS: Greenhouse
+Current Slug: tailscale
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://tailscale.com
+Action needed: OK
+---
+Company: Talon.One
+Current ATS: Greenhouse
+Current Slug: talonone
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.talon.one
+Action needed: OK
+---
+Company: TMS LLC
+Current ATS: SmartRecruiters
+Current Slug: TMSLLC
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Totango
+Current ATS: Rippling
+Current Slug: totango
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.totango.com
+Action needed: OK
+---
+Company: Tremendous
+Current ATS: Ashby
+Current Slug: tremendous
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=Tremendous+jobs
+Action needed: OK
+---
+Company: Tutor Intelligence
+Current ATS: Lever
+Current Slug: tutorintelligence
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Unframe
+Current ATS: Greenhouse
+Current Slug: unframe
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://unframe.com  [HTTP 403]
+Action needed: OK
+---
+Company: Vanta
+Current ATS: Ashby
+Current Slug: vanta
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.vanta.com/careers
+Action needed: OK
+---
+Company: Vantor
+Current ATS: Workday
+Current Slug: maxar.wd1/Vantor
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Varicent
+Current ATS: Greenhouse
+Current Slug: varicent
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.varicent.com
+Action needed: OK
+---
+Company: Veeva
+Current ATS: Lever
+Current Slug: veeva
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Verkada
+Current ATS: Greenhouse
+Current Slug: verkada
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.verkada.com
+Action needed: OK
+---
+Company: Viant Technology
+Current ATS: Greenhouse
+Current Slug: vianttechnology
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Virtuous
+Current ATS: Ashby
+Current Slug: virtuous
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.virtuous.org
+Action needed: OK
+---
+Company: Webflow
+Current ATS: Greenhouse
+Current Slug: webflow
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://webflow.com
+Action needed: OK
+---
+Company: WellRight
+Current ATS: Rippling
+Current Slug: wellright
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=WellRight+jobs
+Action needed: OK
+---
+Company: WEX Inc.
+Current ATS: Workday
+Current Slug: wexinc
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://careers.wexinc.com
+Action needed: OK
+---
+Company: WisdomAI
+Current ATS: Lever
+Current Slug: wisdomai
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.google.com/search?q=WisdomAI+jobs
+Action needed: OK
+---
+Company: Wrike
+Current ATS: Greenhouse
+Current Slug: wrike
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Yext
+Current ATS: Greenhouse
+Current Slug: yext
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.yext.com
+Action needed: OK
+---
+Company: Zelis
+Current ATS: Workday
+Current Slug: zelis.wd1/ZelisCareers
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Zendesk
+Current ATS: Workday
+Current Slug: zendesk.wd1/zendesk
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.zendesk.com
+Action needed: OK
+---
+Company: Zeta Global
+Current ATS: Greenhouse
+Current Slug: zetaglobal
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.zetaglobal.com/careers/
+Action needed: OK
+---
+Company: Zip
+Current ATS: Ashby
+Current Slug: zip
+Detected ATS: Ashby
+Confidence: MEDIUM
+Careers URL: https://ziphq.com/careers
+Action needed: OK
+---
+Company: Zscaler
+Current ATS: Greenhouse
+Current Slug: zscaler
+Detected ATS: N/A
+Confidence: N/A
+Careers URL: NOT SET
+Action needed: OK
+---
+Company: Zuora
+Current ATS: Greenhouse
+Current Slug: zuora
+Detected ATS: UNKNOWN
+Confidence: N/A
+Careers URL: https://www.zuora.com  [HTTP 502]
+Action needed: OK
+---
+Company: Zwift
+Current ATS: Greenhouse
+Current Slug: zwift
+Detected ATS: Greenhouse
+Confidence: MEDIUM
+Careers URL: https://www.zwift.com/careers
+Action needed: OK
+---
+
+=== ATS Audit Summary — 2026-05-28 ===
+Total companies audited:     302
+  OK (no action needed):     211
+  Update ATS needed:         83
+  Update Slug needed:        7
+  Verify (mismatch):         1
+  Detection error/timeout:   0
