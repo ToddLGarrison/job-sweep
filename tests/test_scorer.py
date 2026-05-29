@@ -33,6 +33,10 @@ def _make_html(text: str) -> str:
     return f"<html><body><p>{text}</p></body></html>"
 
 
+# Long enough to pass the 200-char description length guard.
+_MOCK_HTML = "<html><body><p>" + "x" * 300 + "</p></body></html>"
+
+
 # ---------------------------------------------------------------------------
 # score_opportunity
 # ---------------------------------------------------------------------------
@@ -96,13 +100,13 @@ class TestScoreOpportunity:
 # ---------------------------------------------------------------------------
 
 class TestBatchScoreUnscored:
-    def _setup_patches(self, opps, score="⭐⭐⭐", html="<html><body>Job description text.</body></html>"):
+    def _setup_patches(self, opps, score="⭐⭐⭐", html=None):
         """Return a context-manager-friendly set of patches."""
         return (
             patch("scorer.notion.fetch_unscored_opportunities", return_value=opps),
             patch("scorer.notion.update_fit_score"),
             patch("scorer.score_opportunity", return_value=score),
-            patch("scorer.requests.get", return_value=MagicMock(text=html)),
+            patch("scorer.requests.get", return_value=MagicMock(text=html or _MOCK_HTML)),
             patch("scorer.time.sleep"),
         )
 
@@ -134,7 +138,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score") as mock_update, \
              patch("scorer.score_opportunity", return_value="⭐⭐⭐"), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep"):
             stats = batch_score_unscored(dry_run=True)
         mock_update.assert_not_called()
@@ -146,7 +150,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score"), \
              patch("scorer.score_opportunity", return_value="⭐⭐"), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep") as mock_sleep:
             batch_score_unscored()
         assert mock_sleep.call_count == 3
@@ -186,7 +190,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score"), \
              patch("scorer.score_opportunity", return_value=None), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep"):
             stats = batch_score_unscored()
         assert stats["errors"] == 1
@@ -202,7 +206,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score"), \
              patch("scorer.score_opportunity", side_effect=capture_score), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep"):
             batch_score_unscored()
         assert captured["title"] == "Customer Success Engineer"
@@ -217,7 +221,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score"), \
              patch("scorer.score_opportunity", return_value="⭐⭐⭐"), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep"):
             stats = batch_score_unscored()
         assert stats == {"scored": 1, "skipped": 2, "errors": 0}
@@ -228,7 +232,7 @@ class TestBatchScoreUnscored:
         with patch("scorer.notion.fetch_unscored_opportunities", return_value=opps), \
              patch("scorer.notion.update_fit_score", side_effect=Exception("Notion API error")), \
              patch("scorer.score_opportunity", return_value="⭐⭐⭐"), \
-             patch("scorer.requests.get", return_value=MagicMock(text="<html><body>desc</body></html>")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
              patch("scorer.time.sleep"):
             stats = batch_score_unscored()
         assert stats["errors"] == 1
