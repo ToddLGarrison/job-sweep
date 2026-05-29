@@ -27,12 +27,17 @@ Todd's profile:
   dedicated SE title experience, deep cloud infrastructure
 - Prefers: remote or Boston/Portland ME hybrid, $80K-$120K+ base,
   B2B SaaS, no quota-carrying sales, no people management
+- Solutions Architect roles that list cloud infrastructure design
+  (AWS/Azure/GCP architecture, IaC, Kubernetes) as core — not peripheral —
+  to the role should be treated as having a significant domain gap and
+  scored no higher than ⭐⭐⭐
 
 Scoring rubric:
 ⭐⭐⭐⭐⭐ Excellent: Right role type, right seniority, remote/Boston/Portland,
   salary $80K+, no red flag requirements, strong profile match
 ⭐⭐⭐⭐ Strong: Good match but missing one factor (comp unlisted, slight
-  seniority stretch, minor domain gap)
+  seniority stretch, minor domain gap). When compensation is not listed
+  and no strong positive signals exist, do not score above ⭐⭐⭐⭐
 ⭐⭐⭐ Good: Role type matches but 1-2 gaps (domain knowledge preferred,
   slightly more SE experience requested than Todd has)
 ⭐⭐ Weak: Significant gap, or role is more sales-heavy than preferred,
@@ -47,6 +52,10 @@ Auto-exclude (always ⭐):
 - Extensive travel required
 - People management required
 - Comp ceiling below $80K
+- Job title explicitly contains Senior, Lead, Staff, Principal, Director,
+  VP, or Head of
+- Role is explicitly on-site and location is not remote, Boston MA,
+  or Portland ME
 
 Respond with ONLY the star rating on a single line. Nothing else.
 Valid responses: ⭐, ⭐⭐, ⭐⭐⭐, ⭐⭐⭐⭐, ⭐⭐⭐⭐⭐"""
@@ -109,6 +118,11 @@ def batch_score_unscored(dry_run: bool = False) -> dict:
         except Exception as e:
             print(f"ERROR [scorer] Failed to fetch {job_url}: {e}")
             errors += 1
+            continue
+
+        if len(description) < 200:
+            print(f"SKIP [scorer] Description too short ({len(description)} chars) for {name} — possible bot block or redirect")
+            skipped += 1
             continue
 
         # Extract title from "Company / Title / Year" name format
