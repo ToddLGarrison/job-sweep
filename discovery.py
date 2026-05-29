@@ -270,7 +270,13 @@ def _process_listings(
             stats.errors.append((listing.company_name, f"Company lookup failed: {e}"))
             continue
 
-        if is_duplicate(company, job_listing):
+        try:
+            dupe = is_duplicate(company, job_listing)
+        except Exception as e:
+            stats.errors.append((listing.company_name, f"Dedup check failed (skipping): {e}"))
+            continue
+
+        if dupe:
             print(f"SKIP [Discovery] {listing.company_name} / {listing.title} — duplicate found")
             stats.dupes += 1
             continue
@@ -302,7 +308,11 @@ def _process_listings(
             description=opp_description,
         )
 
-        notion.write_opportunity(opp, dry_run=dry_run)
+        try:
+            notion.write_opportunity(opp, dry_run=dry_run)
+        except Exception as e:
+            stats.errors.append((listing.company_name, f"Failed to write opportunity '{listing.title}': {e}"))
+            continue
 
         label = f"{listing.company_name} / {listing.title} / {today.year} [{listing.ats}]"
         if match_type == "title":
