@@ -58,23 +58,33 @@ def build_digest(sweep_stats: dict) -> str:
         lines.append("")
 
     # 4. Pipeline snapshot
-    snapshot = notion.fetch_pipeline_snapshot()
     lines.append("PIPELINE SNAPSHOT")
     lines.append("-" * 30)
-    total = 0
-    for stage in _PIPELINE_STAGES:
-        count = snapshot.get(stage, 0)
-        total += count
-        lines.append(f"  {stage:<30} {count}")
-    lines.append(f"  {'─' * 32}")
-    lines.append(f"  {'Total active':<30} {total}")
+    try:
+        snapshot = notion.fetch_pipeline_snapshot()
+        total = 0
+        for stage in _PIPELINE_STAGES:
+            count = snapshot.get(stage, 0)
+            total += count
+            lines.append(f"  {stage:<30} {count}")
+        lines.append(f"  {'─' * 32}")
+        lines.append(f"  {'Total active':<30} {total}")
+    except Exception:
+        lines.append("  Pipeline snapshot unavailable (Notion error)")
     lines.append("")
 
     # 5. Errors (omit when empty)
     if errors:
-        lines.append(f"ERRORS ({len(errors)})")
-        lines.append("-" * 30)
+        seen_error_keys: set[tuple] = set()
+        unique_errors = []
         for e in errors:
+            key = (str(e[0]), str(e[1])) if isinstance(e, (list, tuple)) and len(e) >= 2 else (str(e),)
+            if key not in seen_error_keys:
+                seen_error_keys.add(key)
+                unique_errors.append(e)
+        lines.append(f"ERRORS ({len(unique_errors)})")
+        lines.append("-" * 30)
+        for e in unique_errors:
             if isinstance(e, (list, tuple)) and len(e) >= 2:
                 lines.append(f"  {e[0]}: {e[1]}")
             else:
@@ -83,7 +93,7 @@ def build_digest(sweep_stats: dict) -> str:
 
     # 6. Footer
     lines.append("─" * 42)
-    lines.append(f"Next sweep: {today.isoformat()} 10pm ET")
+    lines.append("Next sweep: 6:00 AM ET daily")
 
     return "\n".join(lines)
 
