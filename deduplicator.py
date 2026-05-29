@@ -13,7 +13,7 @@ def _normalize_url(url: str) -> str:
 def is_duplicate(company: Company, listing: JobListing) -> bool:
     if listing.url:
         normalized = _normalize_url(listing.url)
-        if notion.query_by_url(listing.url) or notion.query_by_url(normalized):
+        if notion.query_by_url(normalized):
             return True
     if notion.query_by_name(company.name, listing.title):
         return True
