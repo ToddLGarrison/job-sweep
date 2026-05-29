@@ -24,6 +24,7 @@ def build_digest(sweep_stats: dict) -> str:
     new_roles = sweep_stats.get("new_roles", [])
     discovery_roles = sweep_stats.get("discovery_new_roles", [])
     closed_roles = sweep_stats.get("closed_roles", [])
+    blocked_roles = sweep_stats.get("blocked_roles", [])
     errors = sweep_stats.get("errors", [])
 
     lines: list[str] = []
@@ -57,7 +58,15 @@ def build_digest(sweep_stats: dict) -> str:
             lines.append(f"  {r}")
         lines.append("")
 
-    # 4. Pipeline snapshot
+    # 4. Blocked roles (omit when empty)
+    if blocked_roles:
+        lines.append(f"BLOCKED ROLES — RED FLAGS ({len(blocked_roles)})")
+        lines.append("-" * 30)
+        for r in blocked_roles:
+            lines.append(f"  {r}")
+        lines.append("")
+
+    # 5. Pipeline snapshot
     lines.append("PIPELINE SNAPSHOT")
     lines.append("-" * 30)
     try:
@@ -73,7 +82,7 @@ def build_digest(sweep_stats: dict) -> str:
         lines.append("  Pipeline snapshot unavailable (Notion error)")
     lines.append("")
 
-    # 5. Errors (omit when empty)
+    # 6. Errors (omit when empty)
     if errors:
         seen_error_keys: set[tuple] = set()
         unique_errors = []
@@ -91,7 +100,7 @@ def build_digest(sweep_stats: dict) -> str:
                 lines.append(f"  {e}")
         lines.append("")
 
-    # 6. Footer
+    # 7. Footer
     lines.append("─" * 42)
     lines.append("Next sweep: 6:00 AM ET daily")
 
@@ -127,6 +136,7 @@ def merge_stats(current: dict, previous: dict) -> dict:
         "new_roles": previous.get("new_roles", []) + current.get("new_roles", []),
         "discovery_new_roles": previous.get("discovery_new_roles", []) + current.get("discovery_new_roles", []),
         "closed_roles": previous.get("closed_roles", []) + current.get("closed_roles", []),
+        "blocked_roles": previous.get("blocked_roles", []) + current.get("blocked_roles", []),
         "errors": previous.get("errors", []) + current.get("errors", []),
         "geo_filtered": previous.get("geo_filtered", 0) + current.get("geo_filtered", 0),
         "red_flagged": previous.get("red_flagged", 0) + current.get("red_flagged", 0),

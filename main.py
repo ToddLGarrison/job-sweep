@@ -18,7 +18,6 @@ def _acquire_lock():
 
 import notion_api as notion
 from config import ATS_SCRAPER_MAP, COMPANY_BLOCKLIST, DISCOVERY_ENABLED
-from notion_client.errors import RequestTimeoutError
 from scorer import batch_score_unscored
 from deduplicator import is_duplicate
 from digest import (
@@ -178,8 +177,8 @@ def main() -> None:
     if not args.skip_expiry:
         try:
             expiry = run_expiry_check(dry_run=args.dry_run)
-        except RequestTimeoutError as e:
-            print(f"WARNING: Expiry check timed out, skipping for this run: {e}")
+        except Exception as e:
+            print(f"WARNING: Expiry check failed, skipping for this run: {e}")
 
     # --- Run summary ---
     print(f"\n=== Job Sweep Complete — {today.isoformat()} ===")
@@ -265,10 +264,16 @@ def main() -> None:
     if expiry and expiry.errors:
         all_errors.append(["Expiry checker", f"{expiry.errors} error(s) during expiry check"])
 
+    blocked_roles = [
+        f"{label} — [{', '.join(f.code for f in flags)}] — {url}"
+        for label, url, flags in red_flagged_roles
+    ]
+
     sweep_stats = {
         "new_roles": new_roles,
         "discovery_new_roles": disc.new_roles if disc else [],
         "closed_roles": expiry.closed_roles if expiry else [],
+        "blocked_roles": blocked_roles,
         "errors": all_errors,
         "geo_filtered": geo_filtered + (disc.geo_filtered if disc else 0),
         "red_flagged": red_flagged + (disc.red_flagged if disc else 0),
