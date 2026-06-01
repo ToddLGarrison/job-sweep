@@ -1,14 +1,33 @@
 import datetime
+import time
 from typing import Optional
 from urllib.parse import urlparse, urlunparse
 
 from notion_client import Client
-from notion_client.errors import APIResponseError
+from notion_client.errors import APIResponseError, RequestTimeoutError
 
 from config import COMPANIES_DB_ID, NOTION_API_KEY, OPPORTUNITIES_DB_ID
 from models import Company, Opportunity
 
 _client = Client(auth=NOTION_API_KEY, timeout_ms=15_000)
+
+_MAX_RETRIES = 3
+
+
+def _call_notion(fn, *args, **kwargs):
+    """Retry on transient Notion API failures: timeout and 429 rate limit."""
+    for attempt in range(_MAX_RETRIES):
+        try:
+            return fn(*args, **kwargs)
+        except RequestTimeoutError:
+            if attempt == _MAX_RETRIES - 1:
+                raise
+            time.sleep(2 ** attempt)
+        except APIResponseError as e:
+            if e.status == 429 and attempt < _MAX_RETRIES - 1:
+                time.sleep(5 * (2 ** attempt))
+                continue
+            raise
 
 
 def fetch_companies() -> list[Company]:
@@ -18,7 +37,7 @@ def fetch_companies() -> list[Company]:
         kwargs: dict = {}
         if cursor:
             kwargs["start_cursor"] = cursor
-        resp = _client.data_sources.query(COMPANIES_DB_ID, **kwargs)
+        resp = _call_notion(_client.data_sources.query, COMPANIES_DB_ID, **kwargs)
         for page in resp["results"]:
             props = page["properties"]
             name = _get_title(props.get("Name", {}))
@@ -42,7 +61,8 @@ def fetch_companies() -> list[Company]:
 
 
 def find_company_by_slug(ats: str, slug: str) -> Optional[Company]:
-    resp = _client.data_sources.query(
+    resp = _call_notion(
+        _client.data_sources.query,
         COMPANIES_DB_ID,
         filter={
             "and": [
@@ -64,7 +84,8 @@ def find_company_by_slug(ats: str, slug: str) -> Optional[Company]:
 
 
 def find_company_by_name(name: str) -> Optional[Company]:
-    resp = _client.data_sources.query(
+    resp = _call_notion(
+        _client.data_sources.query,
         COMPANIES_DB_ID,
         filter={"property": "Name", "title": {"contains": name}},
     )
@@ -97,7 +118,8 @@ def create_company(
     if dry_run:
         print(f"  [DRY RUN] Would create company: {name} [{ats}/{slug}]")
         return Company(page_id="dry-run", name=name, ats=ats, ats_slug=slug)
-    resp = _client.pages.create(
+    resp = _call_notion(
+        _client.pages.create,
         parent={"data_source_id": COMPANIES_DB_ID},
         properties=properties,
     )
@@ -110,25 +132,27 @@ def _normalize_url(url: str) -> str:
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path.rstrip("/"), "", "", ""))
 
 
-def query_by_url(url: str) -> bool:
-    resp = _client.data_sources.query(
-        OPPORTUNITIES_DB_ID,
-        filter={"property": "Job URL", "url": {"equals": url}},
-    )
-    return len(resp["results"]) > 0
-
-
 _ACTIVE_STAGES = [
     "Qualification", "Holding", "Prioritized", "Create Resume",
     "Contacted / Applied", "Follow-up", "Meeting Scheduled",
 ]
 
 
+def query_by_url(url: str) -> bool:
+    resp = _call_notion(
+        _client.data_sources.query,
+        OPPORTUNITIES_DB_ID,
+        filter={"property": "Job URL", "url": {"equals": url}},
+    )
+    return len(resp["results"]) > 0
+
+
 def query_by_name(company_name: str, role_title: str) -> bool:
     stage_clauses = [
         {"property": "Stage", "select": {"equals": s}} for s in _ACTIVE_STAGES
     ]
-    resp = _client.data_sources.query(
+    resp = _call_notion(
+        _client.data_sources.query,
         OPPORTUNITIES_DB_ID,
         filter={
             "and": [
@@ -153,14 +177,13 @@ def write_opportunity(opp: Opportunity, dry_run: bool = False) -> None:
         "Company": {"relation": [{"id": opp.company.page_id}]},
         "Role Type": {"select": {"name": opp.role_type}},
     }
-    if opp.notes:
-        properties["Notes"] = {"rich_text": [{"text": {"content": opp.notes}}]}
     if opp.description:
         properties["Description"] = {"rich_text": [{"text": {"content": opp.description}}]}
     if dry_run:
         print(f"  [DRY RUN] Would create: {name}")
         return
-    _client.pages.create(
+    _call_notion(
+        _client.pages.create,
         parent={"data_source_id": OPPORTUNITIES_DB_ID},
         properties=properties,
     )
@@ -178,7 +201,7 @@ def fetch_active_opportunities() -> list[dict]:
         kwargs: dict = {"filter": {"or": filter_clauses}}
         if cursor:
             kwargs["start_cursor"] = cursor
-        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        resp = _call_notion(_client.data_sources.query, OPPORTUNITIES_DB_ID, **kwargs)
         for page in resp["results"]:
             props = page["properties"]
             name = _get_title(props.get("Name", {}))
@@ -207,7 +230,7 @@ def fetch_pipeline_snapshot() -> dict[str, int]:
         kwargs: dict = {"filter": {"or": filter_clauses}}
         if cursor:
             kwargs["start_cursor"] = cursor
-        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        resp = _call_notion(_client.data_sources.query, OPPORTUNITIES_DB_ID, **kwargs)
         for page in resp["results"]:
             stage = _get_select(page["properties"].get("Stage", {}))
             if stage in counts:
@@ -235,7 +258,7 @@ def fetch_unscored_opportunities() -> list[dict]:
         }
         if cursor:
             kwargs["start_cursor"] = cursor
-        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        resp = _call_notion(_client.data_sources.query, OPPORTUNITIES_DB_ID, **kwargs)
         for page in resp["results"]:
             props = page["properties"]
             opps.append({
@@ -253,7 +276,7 @@ def fetch_unscored_opportunities() -> list[dict]:
 
 def update_fit_score(page_id: str, score: str) -> None:
     """Write the Fit Score select field on an opportunity page."""
-    _client.pages.update(page_id=page_id, properties={
+    _call_notion(_client.pages.update, page_id=page_id, properties={
         "Fit Score": {"select": {"name": score}},
     })
 
@@ -271,12 +294,15 @@ def update_opportunity_expiry(
         action = f"close + misses={consecutive_misses}" if stage else f"misses={consecutive_misses}"
         print(f"  [DRY RUN] Would update expiry {page_id}: {action}")
         return
-    _client.pages.update(page_id=page_id, properties=properties)
+    _call_notion(_client.pages.update, page_id=page_id, properties=properties)
 
 
 def search_opportunities_by_company(company_name: str) -> list[dict]:
     """Case-insensitive search for active opportunities matching company_name."""
-    active_stages = [    "Qualification", "Prioritized", "Create Resume", "Contacted / Applied", "Follow-up", "Meeting Scheduled",]
+    active_stages = [
+        "Qualification", "Prioritized", "Create Resume", "Contacted / Applied",
+        "Follow-up", "Meeting Scheduled",
+    ]
     stage_clauses = [{"property": "Stage", "select": {"equals": s}} for s in active_stages]
     opps = []
     cursor = None
@@ -291,7 +317,7 @@ def search_opportunities_by_company(company_name: str) -> list[dict]:
         }
         if cursor:
             kwargs["start_cursor"] = cursor
-        resp = _client.data_sources.query(OPPORTUNITIES_DB_ID, **kwargs)
+        resp = _call_notion(_client.data_sources.query, OPPORTUNITIES_DB_ID, **kwargs)
         for page in resp["results"]:
             props = page["properties"]
             name = _get_title(props.get("Name", {}))
@@ -317,7 +343,8 @@ def search_opportunities_by_company(company_name: str) -> list[dict]:
 def update_research_field(page_id: str, brief: str) -> None:
     """Write the brief to the Research rich_text field, truncated to 2000 chars."""
     truncated = brief[:2000]
-    _client.pages.update(
+    _call_notion(
+        _client.pages.update,
         page_id=page_id,
         properties={
             "Research": {"rich_text": [{"text": {"content": truncated}}]},
@@ -332,7 +359,7 @@ def update_company(page_id: str, hiring: Optional[str], dry_run: bool = False) -
         properties["Hiring"] = {"select": {"name": hiring}}
     if dry_run:
         return
-    _client.pages.update(page_id=page_id, properties=properties)
+    _call_notion(_client.pages.update, page_id=page_id, properties=properties)
 
 
 def _get_title(prop: dict) -> str:
