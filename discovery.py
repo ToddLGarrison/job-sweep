@@ -186,9 +186,10 @@ def _run_builtinboston_discovery(
 ) -> None:
     from scrapers.discovery_builtinboston import fetch_listings
 
+    seen_detail_urls: set[str] = set()
     for keyword in DISCOVERY_TITLES:
         try:
-            listings, unk, blocked = fetch_listings(keyword)
+            listings, unk, blocked = fetch_listings(keyword, seen_detail_urls=seen_detail_urls)
             stats.unknown_ats += unk
             stats.blocked_keywords += blocked
         except Exception as e:

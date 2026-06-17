@@ -42,6 +42,11 @@ DISCOVERY_TITLES = [
     "Technical Education Specialist",
     "Customer Enablement Specialist",
     "Delivery Consultant",
+    "Technical Success Manager",
+    "Platform Consultant",
+    "Value Engineer",
+    "Solutions Success Manager",
+    "Customer Onboarding Engineer",
 ]
 
 DISCOVERY_ROLE_TYPE_MAP = {
@@ -76,6 +81,11 @@ DISCOVERY_ROLE_TYPE_MAP = {
     "Technical Education Specialist": "Implementation",
     "Customer Enablement Specialist": "Implementation",
     "Delivery Consultant": "Implementation",
+    "Technical Success Manager": "Customer Success",
+    "Platform Consultant": "Implementation",
+    "Value Engineer": "Solutions Engineer",
+    "Solutions Success Manager": "Customer Success",
+    "Customer Onboarding Engineer": "Implementation",
 }
 
 TARGET_TITLES = DISCOVERY_TITLES
@@ -93,6 +103,10 @@ TITLE_EXCLUDE = [
 
 COMPANY_BLOCKLIST: set[str] = {
     "Jobgether",    # job aggregator — roles not owned by this company
+    "PwC",
+    "ZS",
+    "Liberty Mutual Insurance",
+    "MassMutual",
 }
 
 ATS_SCRAPER_MAP = {

@@ -20,10 +20,15 @@ from scrapers.ats_detector import extract_ats_domain, resolve_ats
 _BASE_URL = "https://www.builtinboston.com"
 _SEARCH_URL = _BASE_URL + "/jobs?search={keyword}&remote=true"
 _IMPERSONATE = "chrome120"
-_REQUEST_DELAY = 1.0  # seconds between detail page fetches
+_REQUEST_DELAY = 2.0  # seconds between detail page fetches
+_RETRY_DELAYS = (5, 10, 20)  # seconds; exponential backoff on 429
 
 
-def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int, int]:
+class _RateLimitError(Exception):
+    pass
+
+
+def fetch_listings(keyword: str, seen_detail_urls: set[str] | None = None) -> tuple[list[DiscoveryListing], int, int]:
     url = _SEARCH_URL.format(keyword=quote(keyword))
     try:
         resp = requests.get(url, impersonate=_IMPERSONATE, timeout=20)
@@ -45,9 +50,16 @@ def fetch_listings(keyword: str) -> tuple[list[DiscoveryListing], int, int]:
     results = []
     unknown_ats = 0
     for company_name, title, detail_url in cards:
+        if seen_detail_urls is not None:
+            if detail_url in seen_detail_urls:
+                continue
+            seen_detail_urls.add(detail_url)
         try:
             apply_url = _fetch_apply_url(detail_url)
             time.sleep(_REQUEST_DELAY)  # polite delay only after a successful fetch
+        except _RateLimitError:
+            print(f"RATE LIMITED [BuiltInBoston] {detail_url} — skipping after 3 retries")
+            continue
         except Exception as e:
             print(f"ERROR [BuiltInBoston] detail {detail_url}: {e}")
             continue
@@ -99,6 +111,15 @@ def _parse_listing_page(html: str) -> list[tuple[str, str, str]]:
 def _fetch_apply_url(detail_url: str) -> str:
     """Fetch a Built In Boston job detail page and extract the howToApply URL."""
     resp = requests.get(detail_url, impersonate=_IMPERSONATE, timeout=20)
+    if resp.status_code == 429:
+        for attempt, wait in enumerate(_RETRY_DELAYS, start=1):
+            print(f"RATE LIMITED [BuiltInBoston] {detail_url} — retry {attempt}/3 in {wait}s")
+            time.sleep(wait)
+            resp = requests.get(detail_url, impersonate=_IMPERSONATE, timeout=20)
+            if resp.status_code != 429:
+                break
+        else:
+            raise _RateLimitError(detail_url)
     resp.raise_for_status()
     return _extract_how_to_apply(resp.text)
 
