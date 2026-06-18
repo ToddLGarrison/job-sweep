@@ -294,7 +294,10 @@ def update_opportunity_expiry(
         action = f"close + misses={consecutive_misses}" if stage else f"misses={consecutive_misses}"
         print(f"  [DRY RUN] Would update expiry {page_id}: {action}")
         return
-    _call_notion(_client.pages.update, page_id=page_id, properties=properties)
+    try:
+        _call_notion(_client.pages.update, page_id=page_id, properties=properties)
+    except APIResponseError as e:
+        print(f"WARNING: update_opportunity_expiry failed for page {page_id}: {e}")
 
 
 def search_opportunities_by_company(company_name: str) -> list[dict]:
