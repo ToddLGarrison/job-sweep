@@ -60,7 +60,11 @@ def _apply_miss(consecutive_misses: int) -> tuple[int, bool]:
 
 def run_expiry_check(dry_run: bool = False) -> ExpiryStats:
     stats = ExpiryStats()
-    opps = notion.fetch_active_opportunities()
+    try:
+        opps = notion.fetch_active_opportunities()
+    except Exception as e:
+        print(f"WARNING: Expiry check skipped — could not fetch opportunities: {e}")
+        return stats
 
     for opp in opps:
         url = opp.get("url", "")

@@ -21,7 +21,6 @@ After the main sweep, `discovery.py` searches for roles at companies not yet in 
 - Greenhouse board search API (per title keyword)
 - Lever and Ashby boards for all companies already in Notion
 - SmartRecruiters and Workday boards for all companies already in Notion
-- BuiltInBoston (scraped with TLS impersonation via curl_cffi)
 - VentureFizz (scraped)
 - YC Work at a Startup (parsed from the sales/GTM listing page)
 
@@ -63,7 +62,6 @@ Listings are classified by title match or secondary JD keyword scan (2+ matching
 | Greenhouse board search API | `scrapers/discovery_greenhouse.py` |
 | Lever (all-jobs per company) | `scrapers/discovery_lever.py` |
 | Ashby (all-jobs per company) | `scrapers/discovery_ashby.py` |
-| BuiltInBoston | `scrapers/discovery_builtinboston.py` |
 | VentureFizz | `scrapers/discovery_venturefizz.py` |
 | YC Work at a Startup | `scrapers/discovery_yc.py` |
 
@@ -176,7 +174,6 @@ A lockfile at `/tmp/job_sweep.lock` prevents concurrent runs.
 | `scrapers/discovery_greenhouse.py` | Greenhouse board keyword search for discovery |
 | `scrapers/discovery_lever.py` | Lever all-jobs fetch for discovery |
 | `scrapers/discovery_ashby.py` | Ashby all-jobs fetch for discovery |
-| `scrapers/discovery_builtinboston.py` | BuiltInBoston scraper (curl_cffi) |
 | `scrapers/discovery_venturefizz.py` | VentureFizz scraper |
 | `scrapers/discovery_yc.py` | YC Work at a Startup scraper |
 | `scrapers/ats_detector.py` | ATS detection from job apply URLs, with redirect resolution |

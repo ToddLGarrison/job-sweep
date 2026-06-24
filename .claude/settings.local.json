@@ -3,7 +3,11 @@
     "allow": [
       "Bash(.venv/bin/python main.py --dry-run)",
       "Bash(.venv/bin/python *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python *)",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "Bash(.venv/bin/pytest *)",
+      "Bash(PYTHONPATH=/Users/toddgarrison/job-sweep-v2 .venv/bin/pytest *)"
     ]
   }
 }

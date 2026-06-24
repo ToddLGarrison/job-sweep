@@ -8,7 +8,7 @@ Job Sweep is a production daily sweep that runs at 6 AM via launchd and delivers
 Greenhouse, Lever, Ashby, SmartRecruiters, Workday, Comeet, Workable, iCIMS, Rippling, Jobvite, BambooHR — queried via public ATS JSON APIs for each tracked company in Notion.
 
 **Job boards — discovery sweep**
-Greenhouse board search API (per title keyword), Lever and Ashby all-jobs (per Notion company), SmartRecruiters and Workday (per Notion company), BuiltInBoston, VentureFizz, YC Work at a Startup. Discovery auto-creates new companies in Notion at Tier 2 when a matching role is found.
+Greenhouse board search API (per title keyword), Lever and Ashby all-jobs (per Notion company), SmartRecruiters and Workday (per Notion company), VentureFizz, YC Work at a Startup. Discovery auto-creates new companies in Notion at Tier 2 when a matching role is found.
 
 **Title matching and classification**
 30 target titles across Solutions Engineer, Customer Success, Implementation, and Pre-Sales role families. Senior/Lead/Staff/Principal excluded automatically.

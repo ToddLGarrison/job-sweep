@@ -144,7 +144,9 @@ def merge_stats(current: dict, previous: dict) -> dict:
 
 
 def write_last_run(stats: dict) -> None:
-    _LAST_RUN_FILE.write_text(json.dumps(stats))
+    payload = dict(stats)
+    payload["date"] = datetime.date.today().isoformat()
+    _LAST_RUN_FILE.write_text(json.dumps(payload))
 
 
 def read_and_clear_last_run() -> dict | None:

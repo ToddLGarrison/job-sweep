@@ -95,7 +95,7 @@ class TestBuildDigest:
     def test_footer_present(self):
         body = build_digest(_EMPTY_STATS)
         assert "Next sweep:" in body
-        assert "10pm ET" in body
+        assert "6:00 AM ET daily" in body
 
     def test_multiple_errors_formatted(self):
         stats = {**_EMPTY_STATS, "errors": [

@@ -143,7 +143,6 @@ DISCOVERY_JD_KEYWORDS = [
     "technical onboarding",
 ]
 
-BUILTINBOSTON_ENABLED = True
 VENTUREFIZZ_ENABLED = True
 YC_ENABLED = True
 

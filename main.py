@@ -235,8 +235,6 @@ def main() -> None:
         print(f"Geo-filtered (non-US): {disc.geo_filtered}")
         print(f"Red-flagged (skipped): {disc.red_flagged}")
         print(f"Skipped (unknown ATS): {disc.unknown_ats}")
-        if disc.blocked_keywords:
-            print(f"WARNING: BuiltInBoston blocked {disc.blocked_keywords} keyword(s) with 403")
 
         if disc.new_roles:
             print("\nDISCOVERY — NEW ROLES:")
@@ -283,7 +281,8 @@ def main() -> None:
     write_last_run(sweep_stats)
 
     if args.send_digest:
-        combined = merge_stats(sweep_stats, previous) if previous else sweep_stats
+        same_day = previous and previous.get("date") == today.isoformat()
+        combined = merge_stats(sweep_stats, previous) if same_day else sweep_stats
         subject = build_subject(combined)
         body = build_digest(combined)
         send_digest(subject, body)
