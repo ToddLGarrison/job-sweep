@@ -13,6 +13,7 @@ def _make_opp(
     job_url: str = "https://jobs.example.com/se/123",
     stage: str = "Qualification",
     fit_score: str = "",
+    next_step: str = "",
 ) -> dict:
     return {
         "page_id": page_id,
@@ -20,6 +21,7 @@ def _make_opp(
         "job_url": job_url,
         "stage": stage,
         "fit_score": fit_score,
+        "next_step": next_step,
     }
 
 
@@ -237,3 +239,66 @@ class TestBatchScoreUnscored:
             stats = batch_score_unscored()
         assert stats["errors"] == 1
         assert stats["scored"] == 0
+
+
+# ---------------------------------------------------------------------------
+# flag_needs_manual_review (short-description skip path)
+# ---------------------------------------------------------------------------
+
+_SHORT_HTML = "<html><body><p>hi</p></body></html>"  # < 200 chars after get_text
+
+
+class TestManualReviewFlagging:
+    def test_short_description_calls_flag_when_next_step_empty(self):
+        from scorer import batch_score_unscored
+        opp = _make_opp(next_step="")
+        with patch("scorer.notion.fetch_unscored_opportunities", return_value=[opp]), \
+             patch("scorer.notion.flag_needs_manual_review") as mock_flag, \
+             patch("scorer.requests.get", return_value=MagicMock(text=_SHORT_HTML)), \
+             patch("scorer.time.sleep"):
+            stats = batch_score_unscored()
+        mock_flag.assert_called_once_with("page-1", True)
+        assert stats["skipped"] == 1
+
+    def test_short_description_skips_next_step_when_already_set(self):
+        from scorer import batch_score_unscored
+        opp = _make_opp(next_step="Existing note — do not overwrite")
+        with patch("scorer.notion.fetch_unscored_opportunities", return_value=[opp]), \
+             patch("scorer.notion.flag_needs_manual_review") as mock_flag, \
+             patch("scorer.requests.get", return_value=MagicMock(text=_SHORT_HTML)), \
+             patch("scorer.time.sleep"):
+            batch_score_unscored()
+        mock_flag.assert_called_once_with("page-1", False)
+
+    def test_flag_not_called_on_successful_score(self):
+        from scorer import batch_score_unscored
+        opp = _make_opp()
+        with patch("scorer.notion.fetch_unscored_opportunities", return_value=[opp]), \
+             patch("scorer.notion.update_fit_score"), \
+             patch("scorer.notion.flag_needs_manual_review") as mock_flag, \
+             patch("scorer.score_opportunity", return_value="⭐⭐⭐"), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_MOCK_HTML)), \
+             patch("scorer.time.sleep"):
+            batch_score_unscored()
+        mock_flag.assert_not_called()
+
+    def test_dry_run_does_not_call_flag(self):
+        from scorer import batch_score_unscored
+        opp = _make_opp(next_step="")
+        with patch("scorer.notion.fetch_unscored_opportunities", return_value=[opp]), \
+             patch("scorer.notion.flag_needs_manual_review") as mock_flag, \
+             patch("scorer.requests.get", return_value=MagicMock(text=_SHORT_HTML)), \
+             patch("scorer.time.sleep"):
+            batch_score_unscored(dry_run=True)
+        mock_flag.assert_not_called()
+
+    def test_flag_error_does_not_increment_errors_counter(self):
+        from scorer import batch_score_unscored
+        opp = _make_opp(next_step="")
+        with patch("scorer.notion.fetch_unscored_opportunities", return_value=[opp]), \
+             patch("scorer.notion.flag_needs_manual_review", side_effect=Exception("Notion down")), \
+             patch("scorer.requests.get", return_value=MagicMock(text=_SHORT_HTML)), \
+             patch("scorer.time.sleep"):
+            stats = batch_score_unscored()
+        assert stats["errors"] == 0
+        assert stats["skipped"] == 1

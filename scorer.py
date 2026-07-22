@@ -122,6 +122,17 @@ def batch_score_unscored(dry_run: bool = False) -> dict:
 
         if len(description) < 200:
             print(f"SKIP [scorer] Description too short ({len(description)} chars) for {name} — possible bot block or redirect")
+            write_next_step = not opp.get("next_step")
+            if dry_run:
+                fields = "Priority=⚪ Monitor"
+                if write_next_step:
+                    fields += ", Next Step=<manual review note>"
+                print(f"  [DRY RUN] Would flag {name}: {fields}")
+            else:
+                try:
+                    notion.flag_needs_manual_review(page_id, write_next_step)
+                except Exception as e:
+                    print(f"ERROR [scorer] Failed to flag {name} for manual review: {e}")
             skipped += 1
             continue
 

@@ -267,6 +267,7 @@ def fetch_unscored_opportunities() -> list[dict]:
                 "job_url": props.get("Job URL", {}).get("url", "") or "",
                 "stage": _get_select(props.get("Stage", {})),
                 "fit_score": _get_select(props.get("Fit Score", {})),
+                "next_step": _get_text(props.get("Next Step", {})),
             })
         if not resp.get("has_more"):
             break
@@ -279,6 +280,26 @@ def update_fit_score(page_id: str, score: str) -> None:
     _call_notion(_client.pages.update, page_id=page_id, properties={
         "Fit Score": {"select": {"name": score}},
     })
+
+
+_MANUAL_REVIEW_NOTE = (
+    "NEEDS MANUAL REVIEW — description unavailable (possible bot block), "
+    "verify fit via Job URL"
+)
+
+
+def flag_needs_manual_review(page_id: str, write_next_step: bool) -> None:
+    """Set Priority to ⚪ Monitor on a scorer-skipped opportunity.
+
+    Optionally writes a Next Step note when write_next_step is True (i.e.
+    the field was empty — callers check this before calling).
+    """
+    properties: dict = {"Priority": {"select": {"name": "⚪ Monitor"}}}
+    if write_next_step:
+        properties["Next Step"] = {
+            "rich_text": [{"text": {"content": _MANUAL_REVIEW_NOTE}}]
+        }
+    _call_notion(_client.pages.update, page_id=page_id, properties=properties)
 
 
 def update_opportunity_expiry(
