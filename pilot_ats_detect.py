@@ -31,7 +31,13 @@ _GH_GENERIC_SLUGS = {"embed", "jobs", "boards", "widget", "careers", "search", "
 # Workday CDN/asset path segments that appear before the real board name in Workday page HTML.
 # Workday tenant subdomains serve JS/CSS under paths like /en-US/assets/... or /en-US/a/...
 # which share the same URL structure as the real board URL but are NOT the board name.
-_WD_INVALID_BOARDS = frozenset({"assets", "js", "css", "fonts", "img", "images", "static", "wday", "en"})
+_WD_INVALID_BOARDS = frozenset({
+    "assets", "js", "css", "javascript", "fonts", "img", "images", "static", "wday", "en",
+})
+
+# Locale code pattern (en, en-US, de-DE, etc.) — rejects locale prefix when it appears
+# in the board name slot of a no-locale Workday URL pattern.
+_WD_LOCALE_RE = re.compile(r'^[a-z]{2}(?:-[A-Z]{2})?$')
 
 # Jobvite CDN asset paths that match the company-handle slot but are not company handles.
 _JOBVITE_INVALID_SLUGS = frozenset({"__assets__", "assets", "static", "cdn"})
@@ -60,16 +66,32 @@ _ATS_PATTERNS = [
         "Ashby", "high",
         lambda m: m.group(1).lower(),
     ),
-    # Workday — job posting URL: board name is the segment immediately before /job/
-    # This pattern cannot hit CDN asset paths (which never contain /job/).
+    # Workday — locale-prefixed job URL: {tenant}/{locale}/{board}/job/ (most specific)
+    # Cannot hit CDN asset paths, which never contain /job/.
     (
         re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/[^/]*/([A-Za-z0-9_][A-Za-z0-9_\-]+)/job/', re.I),
         "Workday", "high",
         lambda m: f"{m.group(1).lower()}/{m.group(2)}",
     ),
-    # Workday — board root URL fallback (no /job/ required); board name ≥2 chars required.
-    # CDN paths with single-letter or known asset segment names are caught by _WD_INVALID_BOARDS
-    # guard in _scan_text and downgraded to low-confidence.
+    # Workday — no-locale job URL: {tenant}/{board}/job/ (some tenants omit locale prefix)
+    # _WD_LOCALE_RE guard in _is_guarded rejects locale codes that land in the board slot.
+    (
+        re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/([A-Za-z][A-Za-z0-9_\-]{2,})/job/', re.I),
+        "Workday", "high",
+        lambda m: f"{m.group(1).lower()}/{m.group(2)}",
+    ),
+    # Workday — no-locale board root: {tenant}/{board} (redirect canonical URL and embedded
+    # no-locale board refs). Guards in _is_guarded reject locale codes and known CDN names.
+    # Listed before the locale fallback so Tricentis/Fractal-style single-segment URLs are
+    # tried first; a guarded result here does NOT block the locale fallback from running
+    # (see _scan_text, which defers best_guarded until all patterns are exhausted).
+    (
+        re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/([A-Za-z][A-Za-z0-9_\-]{2,})(?=[/?#"\'>\s]|$)', re.I),
+        "Workday", "high",
+        lambda m: f"{m.group(1).lower()}/{m.group(2)}",
+    ),
+    # Workday — locale-prefixed board root fallback (no /job/ required; board name ≥2 chars).
+    # CDN paths guarded by _WD_INVALID_BOARDS; locale codes in board slot guarded by _WD_LOCALE_RE.
     (
         re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/[^/]*/([A-Za-z0-9_][A-Za-z0-9_\-]+)', re.I),
         "Workday", "high",
@@ -242,7 +264,9 @@ def _is_guarded(ats: str, slug: str, m: re.Match) -> bool:
         return True
     if ats == "Workday":
         board = m.group(2)
-        if board.lower() in _WD_INVALID_BOARDS or board.startswith("__"):
+        if (board.lower() in _WD_INVALID_BOARDS
+                or board.startswith("__")
+                or _WD_LOCALE_RE.match(board)):
             return True
     if ats == "Jobvite" and (slug.startswith("__") or slug in _JOBVITE_INVALID_SLUGS):
         return True
@@ -253,13 +277,17 @@ def _scan_text(text: str) -> tuple[str, str, str] | None:
     """
     Return (ats, slug, confidence) from the first unguarded pattern match, or None.
 
-    For each pattern, iterate ALL occurrences so that a CDN artifact earlier in the
-    HTML doesn't shadow a real company handle that appears later on the same page.
-    If every occurrence is guarded, return the first as low-confidence (so the caller
-    knows the ATS was detected but the slug is untrustworthy).
+    Iteration strategy:
+    - For each pattern, scan ALL occurrences so a CDN artifact early in the HTML
+      doesn't shadow a real handle that appears later on the same page.
+    - A guarded result from one pattern does NOT short-circuit later patterns:
+      best_guarded is recorded across the full pattern list and returned only
+      after every pattern has been tried for a clean match. This ensures that
+      a no-locale Workday pattern guarding "en-US" doesn't prevent the
+      locale-based fallback pattern from running and finding the real board name.
     """
+    best_guarded: tuple[str, str, str] | None = None
     for pattern, ats, confidence, extractor in _ATS_PATTERNS:
-        first_guarded: tuple[str, str, str] | None = None
         pos = 0
         while True:
             m = pattern.search(text, pos)
@@ -267,14 +295,12 @@ def _scan_text(text: str) -> tuple[str, str, str] | None:
                 break
             slug = extractor(m)
             if _is_guarded(ats, slug, m):
-                if first_guarded is None:
-                    first_guarded = (ats, slug, "low")
+                if best_guarded is None:
+                    best_guarded = (ats, slug, "low")
                 pos = m.end()
                 continue
-            return ats, slug, confidence  # clean match
-        if first_guarded is not None:
-            return first_guarded  # all matches were guarded; return first as low-confidence
-    return None
+            return ats, slug, confidence  # clean match — stop immediately
+    return best_guarded  # no clean match from any pattern
 
 
 def detect_ats(website: str) -> tuple[str, str, str, float]:
