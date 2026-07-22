@@ -277,6 +277,65 @@ class TestIsTitleGeoExcluded:
     def test_enterprise_not_excluded(self):
         assert is_title_geo_excluded("Enterprise Customer Success Manager") is False
 
+    # ISO-3166-1 alpha-3 codes
+    def test_aut_in_parenthetical_excluded(self):
+        assert is_title_geo_excluded("Regional Sales Engineer (Remote, AUT)") is True
+
+    def test_aus_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - AUS") is True
+
+    def test_can_excluded(self):
+        assert is_title_geo_excluded("Technical Account Manager (CAN)") is True
+
+    def test_gbr_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect - GBR") is True
+
+    def test_deu_excluded(self):
+        assert is_title_geo_excluded("Customer Success Engineer, DEU") is True
+
+    def test_ind_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - IND") is True
+
+    def test_fra_excluded(self):
+        assert is_title_geo_excluded("Technical Account Manager, FRA") is True
+
+    def test_jpn_excluded(self):
+        assert is_title_geo_excluded("Solutions Consultant - JPN") is True
+
+    def test_sgp_excluded(self):
+        assert is_title_geo_excluded("Customer Engineer - SGP") is True
+
+    def test_bra_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer (BRA)") is True
+
+    def test_mex_excluded(self):
+        assert is_title_geo_excluded("Technical Account Manager - MEX") is True
+
+    def test_irl_excluded(self):
+        assert is_title_geo_excluded("Solutions Architect, IRL") is True
+
+    def test_nld_excluded(self):
+        assert is_title_geo_excluded("Customer Success Engineer - NLD") is True
+
+    def test_che_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - CHE") is True
+
+    def test_alpha3_case_insensitive(self):
+        assert is_title_geo_excluded("Solutions Engineer (remote, aut)") is True
+
+    # Word-boundary guard: common substrings must not false-positive
+    def test_candidate_not_excluded(self):
+        assert is_title_geo_excluded("Senior Candidate Experience Manager") is False
+
+    def test_framework_not_excluded(self):
+        assert is_title_geo_excluded("Solutions Engineer - Framework Specialist") is False
+
+    def test_branch_not_excluded(self):
+        assert is_title_geo_excluded("Implementation Consultant - Branch Banking") is False
+
+    def test_independent_not_excluded(self):
+        assert is_title_geo_excluded("Independent Software Vendor Specialist") is False
+
 
 # --- is_us_or_remote: Indian city + state-code edge cases ---
 

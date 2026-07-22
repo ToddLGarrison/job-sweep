@@ -164,7 +164,11 @@ def location_from_lever(job: dict) -> str:
 
 
 _TITLE_GEO_CODES = {
+    # Multi-region acronyms
     "emea", "apac", "latam", "anz", "dach", "uki", "mena", "cee",
+    # ISO-3166-1 alpha-3 country codes seen in B2B SaaS job titles
+    "aut", "aus", "can", "gbr", "deu", "ind", "fra", "jpn",
+    "sgp", "bra", "mex", "irl", "nld", "che",
 }
 
 _TITLE_GEO_WORDS = {
