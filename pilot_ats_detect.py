@@ -28,6 +28,14 @@ from config import COMPANIES_DB_ID, NOTION_API_KEY
 # Greenhouse board tokens that are generic widget paths, not real board names.
 _GH_GENERIC_SLUGS = {"embed", "jobs", "boards", "widget", "careers", "search", "apply", "api"}
 
+# Workday CDN/asset path segments that appear before the real board name in Workday page HTML.
+# Workday tenant subdomains serve JS/CSS under paths like /en-US/assets/... or /en-US/a/...
+# which share the same URL structure as the real board URL but are NOT the board name.
+_WD_INVALID_BOARDS = frozenset({"assets", "js", "css", "fonts", "img", "images", "static", "wday", "en"})
+
+# Jobvite CDN asset paths that match the company-handle slot but are not company handles.
+_JOBVITE_INVALID_SLUGS = frozenset({"__assets__", "assets", "static", "cdn"})
+
 _ATS_PATTERNS = [
     # Greenhouse — two URL formats
     (
@@ -52,9 +60,18 @@ _ATS_PATTERNS = [
         "Ashby", "high",
         lambda m: m.group(1).lower(),
     ),
-    # Workday: slug = "tenant.wdN/board"
+    # Workday — job posting URL: board name is the segment immediately before /job/
+    # This pattern cannot hit CDN asset paths (which never contain /job/).
     (
-        re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/[^/]*/([A-Za-z0-9_\-]+)', re.I),
+        re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/[^/]*/([A-Za-z0-9_][A-Za-z0-9_\-]+)/job/', re.I),
+        "Workday", "high",
+        lambda m: f"{m.group(1).lower()}/{m.group(2)}",
+    ),
+    # Workday — board root URL fallback (no /job/ required); board name ≥2 chars required.
+    # CDN paths with single-letter or known asset segment names are caught by _WD_INVALID_BOARDS
+    # guard in _scan_text and downgraded to low-confidence.
+    (
+        re.compile(r'([a-z0-9\-]+\.wd\d+)\.myworkdayjobs\.com/[^/]*/([A-Za-z0-9_][A-Za-z0-9_\-]+)', re.I),
         "Workday", "high",
         lambda m: f"{m.group(1).lower()}/{m.group(2)}",
     ),
@@ -219,16 +236,44 @@ def write_ats_detection(page_id: str, ats: str, slug: str) -> None:
 # ATS detection
 # ---------------------------------------------------------------------------
 
+def _is_guarded(ats: str, slug: str, m: re.Match) -> bool:
+    """Return True if this match should be rejected as a CDN artifact or generic path."""
+    if ats == "Greenhouse" and slug in _GH_GENERIC_SLUGS:
+        return True
+    if ats == "Workday":
+        board = m.group(2)
+        if board.lower() in _WD_INVALID_BOARDS or board.startswith("__"):
+            return True
+    if ats == "Jobvite" and (slug.startswith("__") or slug in _JOBVITE_INVALID_SLUGS):
+        return True
+    return False
+
+
 def _scan_text(text: str) -> tuple[str, str, str] | None:
-    """Return (ats, slug, confidence) from the first pattern match, or None."""
+    """
+    Return (ats, slug, confidence) from the first unguarded pattern match, or None.
+
+    For each pattern, iterate ALL occurrences so that a CDN artifact earlier in the
+    HTML doesn't shadow a real company handle that appears later on the same page.
+    If every occurrence is guarded, return the first as low-confidence (so the caller
+    knows the ATS was detected but the slug is untrustworthy).
+    """
     for pattern, ats, confidence, extractor in _ATS_PATTERNS:
-        m = pattern.search(text)
-        if m:
+        first_guarded: tuple[str, str, str] | None = None
+        pos = 0
+        while True:
+            m = pattern.search(text, pos)
+            if not m:
+                break
             slug = extractor(m)
-            # Greenhouse slug guard: generic widget paths are not real board tokens
-            if ats == "Greenhouse" and slug in _GH_GENERIC_SLUGS:
-                return ats, slug, "low"
-            return ats, slug, confidence
+            if _is_guarded(ats, slug, m):
+                if first_guarded is None:
+                    first_guarded = (ats, slug, "low")
+                pos = m.end()
+                continue
+            return ats, slug, confidence  # clean match
+        if first_guarded is not None:
+            return first_guarded  # all matches were guarded; return first as low-confidence
     return None
 
 
