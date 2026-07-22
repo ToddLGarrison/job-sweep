@@ -73,13 +73,40 @@ class TestCheckUrlLive:
         with patch("expiry_checker.requests.get", return_value=mock_resp):
             assert check_url_live("https://jobs.ashbyhq.com/acme/123", "Ashby") is False
 
+    def test_workday_posting_available_true_returns_true(self):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = "postingAvailable: true, other: stuff"
+        with patch("expiry_checker.requests.get", return_value=mock_resp):
+            assert check_url_live("https://acme.wd5.myworkdayjobs.com/en-US/careers/job/SE_R123", "Workday") is True
+
+    def test_workday_posting_available_false_returns_false(self):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = "postingAvailable: false, other: stuff"
+        with patch("expiry_checker.requests.get", return_value=mock_resp):
+            assert check_url_live("https://acme.wd5.myworkdayjobs.com/en-US/careers/job/SE_R123", "Workday") is False
+
+    def test_workday_non_200_returns_false(self):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 404
+        with patch("expiry_checker.requests.get", return_value=mock_resp):
+            assert check_url_live("https://acme.wd5.myworkdayjobs.com/en-US/careers/job/SE_R123", "Workday") is False
+
+    def test_workday_signal_absent_defaults_to_live(self):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.text = "<html><body>no workday config here</body></html>"
+        with patch("expiry_checker.requests.get", return_value=mock_resp):
+            assert check_url_live("https://acme.wd5.myworkdayjobs.com/en-US/careers/job/SE_R123", "Workday") is True
+
     def test_empty_url_raises(self):
         with pytest.raises(ValueError, match="empty URL"):
             check_url_live("", "Greenhouse")
 
     def test_unknown_ats_raises(self):
         with pytest.raises(ValueError, match="Unknown ATS"):
-            check_url_live("https://example.com/job/123", "Workday")
+            check_url_live("https://example.com/job/123", "LinkedIn")
 
     def test_case_insensitive_ats(self):
         mock_resp = MagicMock()
@@ -99,6 +126,9 @@ class TestInferAts:
 
     def test_ashby_url(self):
         assert _infer_ats("https://jobs.ashbyhq.com/acme/123") == "Ashby"
+
+    def test_workday_url(self):
+        assert _infer_ats("https://crowdstrike.wd5.myworkdayjobs.com/en-US/crowdstrikecareers/job/SE_R123") == "Workday"
 
     def test_unknown_url(self):
         assert _infer_ats("https://careers.example.com/job/123") == ""

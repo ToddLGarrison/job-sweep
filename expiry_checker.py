@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass, field
 
 import requests
@@ -38,6 +39,16 @@ def check_url_live(url: str, ats: str) -> bool:
         body = resp.text.lower()
         return not any(phrase in body for phrase in _CLOSED_PHRASES)
 
+    if ats_key == "workday":
+        resp = requests.get(url, timeout=15, allow_redirects=True)
+        if resp.status_code != 200:
+            return False
+        m = re.search(r"postingAvailable:\s*(true|false)", resp.text)
+        if m:
+            return m.group(1) == "true"
+        # Signal absent (unexpected page structure) — default live to avoid false close
+        return True
+
     raise ValueError(f"Unknown ATS: {ats!r}")
 
 
@@ -49,6 +60,8 @@ def _infer_ats(url: str) -> str:
         return "Lever"
     if "ashbyhq.com" in url:
         return "Ashby"
+    if "myworkdayjobs.com" in url:
+        return "Workday"
     return ""
 
 
