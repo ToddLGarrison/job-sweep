@@ -12,7 +12,6 @@ from config import (
     DISCOVERY_TITLES,
     SECONDARY_JD_SCAN_ENABLED,
     TITLE_EXCLUDE,
-    VENTUREFIZZ_ENABLED,
     YC_ENABLED,
 )
 from deduplicator import is_duplicate
@@ -72,36 +71,14 @@ def run_discovery(dry_run: bool = False) -> DiscoveryStats:
         stats.errors.append(("Discovery", f"fetch_companies failed: {e}"))
         all_companies = []
 
-    _run_greenhouse_discovery(stats, seen_urls, today, dry_run)
     _run_seed_discovery("Lever", all_companies, stats, seen_urls, today, dry_run)
     _run_seed_discovery("Ashby", all_companies, stats, seen_urls, today, dry_run)
     _run_seed_discovery("SmartRecruiters", all_companies, stats, seen_urls, today, dry_run)
     _run_seed_discovery("Workday", all_companies, stats, seen_urls, today, dry_run)
-    if VENTUREFIZZ_ENABLED:
-        _run_venturefizz_discovery(stats, seen_urls, today, dry_run)
     if YC_ENABLED:
         _run_yc_discovery(stats, seen_urls, today, dry_run)
 
     return stats
-
-
-def _run_greenhouse_discovery(
-    stats: DiscoveryStats,
-    seen_urls: set[str],
-    today: datetime.date,
-    dry_run: bool,
-) -> None:
-    from scrapers.discovery_greenhouse import search_jobs
-
-    for keyword in DISCOVERY_TITLES:
-        try:
-            listings, gf = search_jobs(keyword)
-            stats.geo_filtered += gf
-        except Exception as e:
-            stats.errors.append(("Greenhouse discovery", f'keyword "{keyword}": {e}'))
-            continue
-        _process_listings(listings, stats, seen_urls, today, dry_run)
-        del listings
 
 
 def _run_seed_discovery(
@@ -172,26 +149,6 @@ def _run_seed_discovery(
             disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
             _process_listings(disc_listings, stats, seen_urls, today, dry_run)
             del disc_listings
-
-
-def _run_venturefizz_discovery(
-    stats: DiscoveryStats,
-    seen_urls: set[str],
-    today: datetime.date,
-    dry_run: bool,
-) -> None:
-    from scrapers.discovery_venturefizz import fetch_listings
-
-    seen_detail_urls: set[str] = set()
-    for keyword in DISCOVERY_TITLES:
-        try:
-            listings, unk = fetch_listings(keyword, seen_detail_urls=seen_detail_urls)
-            stats.unknown_ats += unk
-        except Exception as e:
-            stats.errors.append(("VentureFizz discovery", f'keyword "{keyword}": {e}'))
-            continue
-        _process_listings(listings, stats, seen_urls, today, dry_run)
-        del listings
 
 
 def _run_yc_discovery(

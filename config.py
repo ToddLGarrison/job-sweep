@@ -143,7 +143,6 @@ DISCOVERY_JD_KEYWORDS = [
     "technical onboarding",
 ]
 
-VENTUREFIZZ_ENABLED = True
 YC_ENABLED = True
 
 # --- Email digest ---
