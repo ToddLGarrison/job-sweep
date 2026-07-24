@@ -288,6 +288,55 @@ _MANUAL_REVIEW_NOTE = (
 )
 
 
+def write_bib_monitor_card(
+    title: str,
+    company_name: str,
+    detail_url: str,
+    salary_text: Optional[str],
+    seniority_text: Optional[str],
+    dry_run: bool = False,
+) -> None:
+    """Write a budget-capped BIB card to Notion as Priority: Monitor.
+
+    ATS is unresolved; the BIB detail URL is used as Job URL.
+    Links to the existing Notion company record by name if one is found.
+    """
+    year = datetime.date.today().year
+    name = f"{company_name} / {title} / {year}"
+
+    note_parts = ["BIB budget cap — ATS unresolved, review manually."]
+    if salary_text:
+        note_parts.append(f"Salary: {salary_text}")
+    if seniority_text:
+        note_parts.append(f"Seniority: {seniority_text}")
+    note_parts.append(f"BIB URL: {detail_url}")
+    description = " | ".join(note_parts)
+
+    properties: dict = {
+        "Name": {"title": [{"text": {"content": name}}]},
+        "Stage": {"select": {"name": "Qualification"}},
+        "Source": {"select": {"name": "Discovery"}},
+        "Job URL": {"url": detail_url},
+        "Verified": {"checkbox": False},
+        "Role Type": {"select": {"name": "Other"}},
+        "Priority": {"select": {"name": "⚪ Monitor"}},
+        "Description": {"rich_text": [{"text": {"content": description}}]},
+    }
+
+    existing_company = find_company_by_name(company_name)
+    if existing_company:
+        properties["Company"] = {"relation": [{"id": existing_company.page_id}]}
+
+    if dry_run:
+        print(f"  [DRY RUN] Would create BIB monitor card: {name}")
+        return
+    _call_notion(
+        _client.pages.create,
+        parent={"data_source_id": OPPORTUNITIES_DB_ID},
+        properties=properties,
+    )
+
+
 def flag_needs_manual_review(page_id: str, write_next_step: bool) -> None:
     """Set Priority to ⚪ Monitor on a scorer-skipped opportunity.
 

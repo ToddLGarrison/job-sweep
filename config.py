@@ -143,6 +143,40 @@ DISCOVERY_JD_KEYWORDS = [
     "technical onboarding",
 ]
 
+BUILTINBOSTON_ENABLED = True
+
+# BIB-specific search titles, split into two tiers.
+# Keep: high-signal, searched twice per 24-slot cycle.
+# Borderline: lower-signal, searched once per cycle.
+# "Customer Solutions Engineer" is omitted — caught by "Solutions Engineer" search.
+BUILTINBOSTON_TITLES: dict[str, list[str]] = {
+    "keep": [
+        "Solutions Engineer",
+        "Solutions Consultant",
+        "Customer Success Engineer",
+        "Technical Account Manager",
+        "Implementation Engineer",
+        "Implementation Consultant",
+        "Onboarding Engineer",
+        "Technical Support Engineer",
+        "Technical Success Manager",
+        "Sales Engineer",
+    ],
+    "borderline": [
+        "Solutions Architect",
+        "Post-Sales Engineer",
+        "Customer Onboarding Engineer",
+        "Professional Services Consultant",
+    ],
+}
+
+# 24-slot rotation queue: keep × 2 (slots 0-9, 14-23), borderline × 1 (slots 10-13).
+BUILTINBOSTON_ROTATION_QUEUE: list[str] = (
+    BUILTINBOSTON_TITLES["keep"]
+    + BUILTINBOSTON_TITLES["borderline"]
+    + BUILTINBOSTON_TITLES["keep"]
+)
+
 YC_ENABLED = True
 
 # --- Email digest ---

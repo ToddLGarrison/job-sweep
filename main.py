@@ -235,6 +235,8 @@ def main() -> None:
         print(f"Geo-filtered (non-US): {disc.geo_filtered}")
         print(f"Red-flagged (skipped): {disc.red_flagged}")
         print(f"Skipped (unknown ATS): {disc.unknown_ats}")
+        if disc.blocked_keywords:
+            print(f"WARNING: BuiltInBoston blocked {disc.blocked_keywords} listing page(s) with 403")
 
         if disc.new_roles:
             print("\nDISCOVERY — NEW ROLES:")

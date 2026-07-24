@@ -4,6 +4,8 @@ from typing import Optional
 
 import notion_api as notion
 from config import (
+    BUILTINBOSTON_ENABLED,
+    BUILTINBOSTON_ROTATION_QUEUE,
     COMPANY_BLOCKLIST,
     DISCOVERY_ENABLED,
     DISCOVERY_JD_KEYWORDS,
@@ -53,6 +55,7 @@ class DiscoveryStats:
     geo_filtered: int = 0
     red_flagged: int = 0
     unknown_ats: int = 0
+    blocked_keywords: int = 0
     new_roles: list = field(default_factory=list)
     errors: list = field(default_factory=list)
 
@@ -75,6 +78,8 @@ def run_discovery(dry_run: bool = False) -> DiscoveryStats:
     _run_seed_discovery("Ashby", all_companies, stats, seen_urls, today, dry_run)
     _run_seed_discovery("SmartRecruiters", all_companies, stats, seen_urls, today, dry_run)
     _run_seed_discovery("Workday", all_companies, stats, seen_urls, today, dry_run)
+    if BUILTINBOSTON_ENABLED:
+        _run_builtinboston_discovery(stats, seen_urls, today, dry_run)
     if YC_ENABLED:
         _run_yc_discovery(stats, seen_urls, today, dry_run)
 
@@ -149,6 +154,29 @@ def _run_seed_discovery(
             disc_listings = [_job_listing_to_discovery(jl, company) for jl in job_listings]
             _process_listings(disc_listings, stats, seen_urls, today, dry_run)
             del disc_listings
+
+
+def _run_builtinboston_discovery(
+    stats: DiscoveryStats,
+    seen_urls: set[str],
+    today: datetime.date,
+    dry_run: bool,
+) -> None:
+    from scrapers.discovery_builtinboston import run_rotation
+
+    try:
+        listings, unk, blocked = run_rotation(
+            BUILTINBOSTON_ROTATION_QUEUE,
+            seen_detail_urls=set(),
+            dry_run=dry_run,
+        )
+        stats.unknown_ats += unk
+        stats.blocked_keywords += blocked
+    except Exception as e:
+        stats.errors.append(("BuiltInBoston discovery", str(e)))
+        return
+    _process_listings(listings, stats, seen_urls, today, dry_run)
+    del listings
 
 
 def _run_yc_discovery(

@@ -28,6 +28,7 @@ class DiscoveryListing:
     slug: str
     description: str = ""
     location: str = ""
+    seniority_text: Optional[str] = None
 
 
 @dataclass
