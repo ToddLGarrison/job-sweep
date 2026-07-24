@@ -337,6 +337,78 @@ class TestFilterCards:
 
 
 # ---------------------------------------------------------------------------
+# Blocklist filtering (happens before detail fetch)
+# ---------------------------------------------------------------------------
+
+class TestFilterCardsBlocklist:
+    """Blocklisted companies must be removed by _filter_cards, not after detail fetch."""
+
+    def test_zs_filtered(self):
+        card = _make_card(company_name="ZS")
+        assert _filter_cards([card]) == []
+
+    def test_pwc_filtered(self):
+        card = _make_card(company_name="PwC")
+        assert _filter_cards([card]) == []
+
+    def test_jobgether_filtered(self):
+        card = _make_card(company_name="Jobgether")
+        assert _filter_cards([card]) == []
+
+    def test_liberty_mutual_filtered(self):
+        card = _make_card(company_name="Liberty Mutual Insurance")
+        assert _filter_cards([card]) == []
+
+    def test_massmutual_filtered(self):
+        card = _make_card(company_name="MassMutual")
+        assert _filter_cards([card]) == []
+
+    def test_blocklist_applies_regardless_of_salary(self):
+        # Good salary doesn't override blocklist
+        card = _make_card(company_name="ZS", salary_text="200K-300K Annually")
+        assert _filter_cards([card]) == []
+
+    def test_non_blocklisted_company_passes(self):
+        card = _make_card(company_name="Acme")
+        assert _filter_cards([card]) == [card]
+
+    def test_blocklisted_and_good_cards_mixed(self):
+        zs = _make_card(company_name="ZS", detail_url="https://bib.com/job/zs/1", job_id=1)
+        good = _make_card(company_name="Acme", detail_url="https://bib.com/job/acme/2", job_id=2)
+        assert _filter_cards([zs, good]) == [good]
+
+    def test_blocklisted_card_never_reaches_fetch(self, monkeypatch, tmp_path):
+        """run_rotation must not call _fetch_apply_url for a blocklisted company."""
+        import json as _j
+        cursor_file = tmp_path / "cursor.json"
+        monkeypatch.setattr("scrapers.discovery_builtinboston._CURSOR_FILE", cursor_file)
+
+        zs_card = _make_card(
+            company_name="ZS",
+            detail_url="https://www.builtinboston.com/job/zs-role/1",
+            job_id=1,
+        )
+        good_card = _make_card(
+            company_name="Acme",
+            detail_url="https://www.builtinboston.com/job/acme-role/2",
+            job_id=2,
+        )
+
+        listing_resp = MagicMock(status_code=200, text="<html></html>")
+        listing_resp.raise_for_status = MagicMock()
+
+        with patch("scrapers.discovery_builtinboston.requests.get", return_value=listing_resp), \
+             patch("scrapers.discovery_builtinboston._parse_listing_page", return_value=[zs_card, good_card]), \
+             patch("scrapers.discovery_builtinboston._fetch_apply_url", return_value="") as mock_fetch, \
+             patch("scrapers.discovery_builtinboston.time.sleep"):
+            run_rotation([f"kw{i}" for i in range(24)])
+
+        # Only good_card should trigger a detail fetch; ZS must be filtered
+        assert mock_fetch.call_count == 1
+        assert mock_fetch.call_args[0][0] == good_card.detail_url
+
+
+# ---------------------------------------------------------------------------
 # Filter counts verified against real fixture data
 # ---------------------------------------------------------------------------
 
@@ -349,10 +421,10 @@ class TestFixtureFilterCounts:
     """
 
     def test_solutions_engineer_survivors(self):
-        # 25 total: 8 easy apply, 0 salary (all ceilings ≥ 80K) → 17 survive
+        # 25 total: 8 easy apply, 2 Liberty Mutual Insurance (blocklist), 0 salary → 15 survive
         cards = _load("bib_solutions_engineer.html")
         survivors = _filter_cards(cards)
-        assert len(survivors) == 17
+        assert len(survivors) == 15
 
     def test_solutions_engineer_easy_apply_none_survive(self):
         cards = _load("bib_solutions_engineer.html")
@@ -477,13 +549,13 @@ class TestRunRotationFilter:
         assert any("8999600" in u for u in called_urls)   # Dynatrace (72K-90K) job_id
 
     def test_senior_card_with_good_salary_gets_fetch(self, monkeypatch, tmp_path):
-        # solutions_engineer: 17 survivors (8 easy apply removed, 0 salary removed)
+        # solutions_engineer: 15 survivors (8 easy apply + 2 Liberty Mutual removed)
         monkeypatch.setattr("scrapers.discovery_builtinboston._CURSOR_FILE", tmp_path / "cursor.json")
         with patch("scrapers.discovery_builtinboston.requests.get", return_value=_listing_resp("bib_solutions_engineer.html")), \
              patch("scrapers.discovery_builtinboston._fetch_apply_url", return_value="") as mock_fetch, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             run_rotation(["Solutions Engineer"])
-        assert mock_fetch.call_count == 17
+        assert mock_fetch.call_count == 15
         called_urls = [c.args[0] for c in mock_fetch.call_args_list]
         # Drata "Senior Solutions Engineer, Enterprise - West" (224K-277K)
         assert any("8896533" in u for u in called_urls)  # Drata job_id
@@ -499,8 +571,8 @@ class TestRunRotationFilter:
              patch("scrapers.discovery_builtinboston._fetch_apply_url", return_value="") as mock_fetch, \
              patch("scrapers.discovery_builtinboston.time.sleep"):
             run_rotation(["Solutions Engineer"], seen_detail_urls=seen)
-        # 17 survivors minus 3 pre-seen Drata cards = 14 detail fetches
-        assert mock_fetch.call_count == 14
+        # 15 survivors minus 3 pre-seen Drata cards = 12 detail fetches
+        assert mock_fetch.call_count == 12
 
     def test_listing_403_returns_blocked_count(self, monkeypatch, tmp_path):
         resp_403 = MagicMock()

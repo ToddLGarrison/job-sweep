@@ -3,7 +3,7 @@
 Flow per run:
   1. Load rotation cursor from ~/.job_sweep_bib_cursor.json (default 0)
   2. GET keyword search listing page for rotation_queue[cursor]
-  3. Filter cards (skip Easy Apply, skip salary ceiling < $80K)
+  3. Filter cards (skip Easy Apply, skip blocklisted companies, skip salary ceiling < $80K)
   4. For each survivor, check detail-request budget before each HTTP request
      (including retries); GET detail page; extract howToApply via jobPostInit
   5. Cards cut off by budget cap are written to Notion as Priority: Monitor
@@ -21,6 +21,7 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup, Tag
 from curl_cffi import requests
 
+from config import COMPANY_BLOCKLIST
 from models import DiscoveryListing
 from scrapers.ats_detector import extract_ats_domain, resolve_ats
 
@@ -32,6 +33,7 @@ _RETRY_DELAYS = (5, 10, 20)
 _SALARY_FLOOR_THRESHOLD = 80_000
 _DETAIL_BUDGET = 20
 _CURSOR_FILE = Path.home() / ".job_sweep_bib_cursor.json"
+_ERROR_LOG = Path.home() / ".job_sweep_bib_errors.jsonl"
 
 
 class _RateLimitError(Exception):
@@ -139,7 +141,10 @@ def run_rotation(
                 f"writing {len(unseen)} unseen card(s) to monitor"
             )
             for mc in unseen:
-                _write_monitor_card(mc, dry_run)
+                try:
+                    _write_monitor_card(mc, dry_run)
+                except Exception as e:
+                    print(f"ERROR [BuiltInBoston] monitor card {mc.company_name}/{mc.title}: {e}")
             break
         except _RateLimitError:
             print(f"RATE LIMITED [BuiltInBoston] {card.detail_url} — skipping after 3 retries")
@@ -184,7 +189,21 @@ def _write_monitor_card(card: BIBCard, dry_run: bool) -> None:
             dry_run=dry_run,
         )
     except Exception as e:
-        print(f"ERROR [BuiltInBoston] monitor card {card.company_name}/{card.title}: {e}")
+        import datetime as _dt
+        import json as _j
+        entry = {
+            "time": _dt.datetime.now().isoformat(),
+            "company": card.company_name,
+            "title": card.title,
+            "url": card.detail_url,
+            "error": str(e),
+        }
+        try:
+            with _ERROR_LOG.open("a") as fh:
+                fh.write(_j.dumps(entry) + "\n")
+        except Exception:
+            pass
+        raise
 
 
 def _filter_cards(cards: list[BIBCard]) -> list[BIBCard]:
@@ -193,6 +212,7 @@ def _filter_cards(cards: list[BIBCard]) -> list[BIBCard]:
 
     Filtered out:
       - Easy Apply cards: apply happens on BIB itself — no external ATS URL exists.
+      - Blocklisted companies: known aggregators or firms whose roles are never relevant.
       - Cards where salary ceiling < $80K: even the top of the posted range falls
         short of our minimum. salary_text=None passes through (treat as unknown).
         Wide ranges like "59K-172K" survive — the ceiling clears the threshold.
@@ -201,6 +221,8 @@ def _filter_cards(cards: list[BIBCard]) -> list[BIBCard]:
     result = []
     for card in cards:
         if card.is_easy_apply:
+            continue
+        if card.company_name in COMPANY_BLOCKLIST:
             continue
         if card.salary_text is not None:
             ceiling = _parse_salary_ceiling(card.salary_text)
